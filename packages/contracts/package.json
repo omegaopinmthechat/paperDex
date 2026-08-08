@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -12,14 +11,11 @@
   "license": "ISC",
   "packageManager": "pnpm@10.33.3",
   "devDependencies": {
-    "@nomicfoundation/hardhat-ethers": "^4.0.15",
-    "@nomicfoundation/hardhat-toolbox": "^7.0.0",
+    "@nomicfoundation/hardhat-toolbox": "5.0.0",
     "@types/node": "^26.1.2",
-    "ethers": "^6.17.0",
-    "hardhat": "^2.29.0",
-    "ts-node": "^10.9.2",
-    "tsx": "^4.23.1",
-    "typescript": "^7.0.2"
+    "ethers": "6",
+    "hardhat": "2.22.19",
+    "tsx": "^4.23.1"
   },
   "dependencies": {
     "@openzeppelin/contracts": "^5.6.1",
