@@ -7,5 +7,5 @@
     "resolveJsonModule": true,
     "types": ["node", "hardhat/types"]
   },
-  "include": ["scripts/**/*", "tests/**/*", "hardhat.config.ts"]
+  "include": ["scripts/**/*", "tests/**/*", "hardhat.config.js"]
 }
