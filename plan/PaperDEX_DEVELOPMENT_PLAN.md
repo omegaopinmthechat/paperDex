@@ -97,10 +97,14 @@ PaperDEX Contracts
 # Monorepo Structure
 
 ```text
+# CRYPTO_PROJECT/
+
+```text
 CRYPTO_PROJECT/
 │
 ├── packages/
-│   ├── contracts/                  # COMPLETE
+│   │
+│   ├── contracts/                         # COMPLETE
 │   │   ├── contracts/
 │   │   ├── scripts/
 │   │   ├── addresses/
@@ -108,71 +112,121 @@ CRYPTO_PROJECT/
 │   │   ├── hardhat.config.js
 │   │   └── package.json
 │   │
-│   ├── backend/                    # Express.js
+│   ├── backend/                           # Express.js - Modular Architecture
 │   │   ├── src/
+│   │   │   │
 │   │   │   ├── config/
 │   │   │   │   ├── env.js
-│   │   │   │   ├── supabase.js
+│   │   │   │   ├── database.js
 │   │   │   │   ├── blockchain.js
 │   │   │   │   └── contracts.js
-│   │   │   ├── auth/
-│   │   │   │   ├── auth.controller.js
-│   │   │   │   ├── auth.service.js
-│   │   │   │   ├── auth.routes.js
-│   │   │   │   └── nonce.service.js
-│   │   │   ├── users/
-│   │   │   │   ├── user.controller.js
-│   │   │   │   ├── user.service.js
-│   │   │   │   ├── user.repository.js
-│   │   │   │   └── user.routes.js
-│   │   │   ├── markets/
-│   │   │   │   ├── market.controller.js
-│   │   │   │   ├── market.service.js
-│   │   │   │   ├── market.repository.js
-│   │   │   │   └── market.routes.js
-│   │   │   ├── oracle/
-│   │   │   │   ├── price.provider.js
-│   │   │   │   ├── price.service.js
-│   │   │   │   └── price.cache.js
-│   │   │   ├── trading/
-│   │   │   │   ├── trading.controller.js
-│   │   │   │   ├── trading.service.js
-│   │   │   │   ├── quote.service.js
-│   │   │   │   ├── trading.routes.js
-│   │   │   │   └── validators/
-│   │   │   ├── portfolio/
-│   │   │   │   ├── portfolio.controller.js
-│   │   │   │   ├── portfolio.service.js
-│   │   │   │   └── portfolio.routes.js
-│   │   │   ├── blockchain/
-│   │   │   │   ├── provider.js
-│   │   │   │   ├── contracts.js
-│   │   │   │   ├── dex.service.js
-│   │   │   │   ├── vault.service.js
-│   │   │   │   ├── token.service.js
-│   │   │   │   └── relayer.service.js
-│   │   │   ├── database/
-│   │   │   │   └── supabase.js
+│   │   │   │
+│   │   │   ├── modules/
+│   │   │   │   │
+│   │   │   │   ├── auth/
+│   │   │   │   │   ├── auth.controller.js
+│   │   │   │   │   ├── auth.service.js
+│   │   │   │   │   ├── auth.repository.js
+│   │   │   │   │   ├── auth.routes.js
+│   │   │   │   │   ├── auth.validator.js
+│   │   │   │   │   └── nonce.service.js
+│   │   │   │   │
+│   │   │   │   ├── users/
+│   │   │   │   │   ├── user.controller.js
+│   │   │   │   │   ├── user.service.js
+│   │   │   │   │   ├── user.repository.js
+│   │   │   │   │   ├── user.routes.js
+│   │   │   │   │   └── user.validator.js
+│   │   │   │   │
+│   │   │   │   ├── markets/
+│   │   │   │   │   ├── market.controller.js
+│   │   │   │   │   ├── market.service.js
+│   │   │   │   │   ├── market.repository.js
+│   │   │   │   │   ├── market.routes.js
+│   │   │   │   │   └── market.validator.js
+│   │   │   │   │
+│   │   │   │   ├── oracle/
+│   │   │   │   │   ├── price.provider.js
+│   │   │   │   │   ├── price.service.js
+│   │   │   │   │   └── price.cache.js
+│   │   │   │   │
+│   │   │   │   ├── trading/
+│   │   │   │   │   ├── trading.controller.js
+│   │   │   │   │   ├── trading.service.js
+│   │   │   │   │   ├── trading.repository.js
+│   │   │   │   │   ├── quote.service.js
+│   │   │   │   │   ├── trading.routes.js
+│   │   │   │   │   └── validators/
+│   │   │   │   │       ├── trade.validator.js
+│   │   │   │   │       └── order.validator.js
+│   │   │   │   │
+│   │   │   │   ├── portfolio/
+│   │   │   │   │   ├── portfolio.controller.js
+│   │   │   │   │   ├── portfolio.service.js
+│   │   │   │   │   ├── portfolio.repository.js
+│   │   │   │   │   └── portfolio.routes.js
+│   │   │   │   │
+│   │   │   │   └── blockchain/
+│   │   │   │       ├── blockchain.service.js
+│   │   │   │       ├── dex.service.js
+│   │   │   │       ├── vault.service.js
+│   │   │   │       ├── token.service.js
+│   │   │   │       ├── relayer.service.js
+│   │   │   │       └── blockchain.repository.js
+│   │   │   │
+│   │   │   ├── infrastructure/
+│   │   │   │   ├── database/
+│   │   │   │   │   ├── supabase.js
+│   │   │   │   │   └── client.js
+│   │   │   │   │
+│   │   │   │   ├── blockchain/
+│   │   │   │   │   ├── provider.js
+│   │   │   │   │   ├── wallet.js
+│   │   │   │   │   └── contracts.js
+│   │   │   │   │
+│   │   │   │   └── external/
+│   │   │   │       └── http.client.js
+│   │   │   │
 │   │   │   ├── middleware/
 │   │   │   │   ├── auth.middleware.js
 │   │   │   │   ├── error.middleware.js
-│   │   │   │   └── rateLimit.middleware.js
+│   │   │   │   ├── rateLimit.middleware.js
+│   │   │   │   └── validation.middleware.js
+│   │   │   │
+│   │   │   ├── routes/
+│   │   │   │   └── index.js
+│   │   │   │
 │   │   │   ├── utils/
+│   │   │   │   ├── logger.js
+│   │   │   │   ├── response.js
+│   │   │   │   ├── errors.js
+│   │   │   │   └── helpers.js
+│   │   │   │
+│   │   │   ├── constants/
+│   │   │   │   ├── errorCodes.js
+│   │   │   │   └── statusCodes.js
+│   │   │   │
 │   │   │   ├── app.js
 │   │   │   └── server.js
+│   │   │
 │   │   ├── .env
 │   │   ├── .env.example
 │   │   ├── eslint.config.js
 │   │   └── package.json
 │   │
-│   └── frontend/                   # Next.js
+│   └── frontend/                           # Next.js
 │       ├── app/
 │       │   ├── page.js
-│       │   ├── trade/page.js
-│       │   ├── markets/page.js
-│       │   ├── portfolio/page.js
-│       │   ├── history/page.js
-│       │   └── settings/page.js
+│       │   ├── trade/
+│       │   │   └── page.js
+│       │   ├── markets/
+│       │   │   └── page.js
+│       │   ├── portfolio/
+│       │   │   └── page.js
+│       │   ├── history/
+│       │   │   └── page.js
+│       │   └── settings/
+│       │       └── page.js
 │       ├── components/
 │       ├── hooks/
 │       ├── lib/
@@ -185,6 +239,7 @@ CRYPTO_PROJECT/
 ├── packages/shared/
 │   ├── constants.js
 │   └── package.json
+│
 ├── package.json
 └── pnpm-workspace.yaml
 ```
@@ -630,36 +685,9 @@ Public contract addresses and ABIs are safe to publish.
 
 ---
 
-# Development Order
 
-```text
-1.  Smart contracts                    DONE
-2.  Sepolia deployment                 DONE
-3.  Express backend setup
-4.  ESLint
-5.  Supabase setup
-6.  Database schema
-7.  MetaMask authentication
-8.  Blockchain service
-9.  Contract integration
-10. Price oracle
-11. Quote generation
-12. EIP-712 quote signing
-13. User EIP-712 signing
-14. Relayer
-15. Trade execution API
-16. Next.js setup
-17. MetaMask connection
-18. Login UI
-19. Markets UI
-20. Trading UI
-21. Portfolio
-22. Trade history
-23. Realtime updates
-24. Security testing
-25. Sepolia end-to-end testing
-26. Production deployment
-```
+
+
 
 # Final Architecture
 
@@ -695,28 +723,3 @@ Public contract addresses and ABIs are safe to publish.
         └── EIP-712 signatures
 ```
 
-# Immediate Next Task
-
-Start with the backend:
-
-```text
-packages/backend
-```
-
-Build in this order:
-
-```text
-Express
-  ↓
-ESLint
-  ↓
-Environment config
-  ↓
-Supabase connection
-  ↓
-Database schema
-  ↓
-MetaMask authentication
-  ↓
-Blockchain service
-```
