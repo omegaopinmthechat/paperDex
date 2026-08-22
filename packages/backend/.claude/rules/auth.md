@@ -13,13 +13,13 @@ paths:
 4. Backend verifies the signature recovers to the claimed wallet address, marks the nonce used, issues a session/JWT.
 
 ## Files
-- `auth.routes.js` — **PLANNED**. Mounts nonce + login routes.
-- `auth.controller.js` — **PLANNED**. Thin: parse request → call service → call `utils/response.js`.
-- `auth.service.js` — **PLANNED**. Signature verification (ethers `verifyMessage` or equivalent) + session/JWT issuance.
-- `auth.repository.js` — **PLANNED**. All `auth_nonces` / `users` Supabase queries live only here.
-- `nonce.service.js` — **PLANNED**. Nonce generation + expiry, split out because both the nonce and login steps use it.
-- `auth.validator.js` — **PLANNED**. Validates wallet-address and signature format before the controller runs.
-- `middleware/auth.middleware.js` — **PLANNED**. Verifies session/JWT on protected routes, attaches `req.user`.
+- `auth.routes.js` — **EXISTS**. Mounts POST /nonce and POST /login with Zod validation middleware.
+- `auth.controller.js` — **EXISTS**. Calls authService, sends canonical envelope via `utils/response.js`.
+- `auth.service.js` — **EXISTS**. Verifies ethers.verifyMessage signature, marks nonce used before issuing JWT.
+- `auth.repository.js` — **EXISTS**. upsertNonce, getNonce, markNonceUsed, upsertUser against Supabase.
+- `nonce.service.js` — **EXISTS**. generateNonce (randomBytes hex), nonceExpiresAt, buildNonceMessage.
+- `auth.validator.js` — **EXISTS**. Zod schemas: nonceSchema (walletAddress), loginSchema (walletAddress + signature).
+- `middleware/auth.middleware.js` — **EXISTS**. Verifies Bearer JWT, attaches req.user = { sub, wallet }.
 
 ## Rules
 1. No private key ever reaches this module — it only *verifies* signatures, never signs on the user's behalf. Any code here needing a private key is wrong; that's a root-§5 ask-first case.
