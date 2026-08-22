@@ -5,19 +5,6 @@ import { fetchNonce, loginWithSignature } from '../actions/auth';
 
 const SEPOLIA_CHAIN_ID = '0xaa36a7';
 
-const btn = {
-  background: '#00ff41', color: '#000', border: 'none',
-  padding: '14px 36px', fontFamily: 'inherit', fontWeight: 900,
-  fontSize: '15px', cursor: 'pointer', letterSpacing: '0.12em',
-  textTransform: 'uppercase', display: 'inline-block',
-};
-
-const btnOutline = {
-  ...btn,
-  background: 'transparent', color: '#00ff41',
-  border: '2px solid #00ff41',
-};
-
 async function ensureSepolia() {
   const chainId = await window.ethereum.request({ method: 'eth_chainId' });
   if (chainId === SEPOLIA_CHAIN_ID) return;
@@ -27,7 +14,6 @@ async function ensureSepolia() {
       params: [{ chainId: SEPOLIA_CHAIN_ID }],
     });
   } catch (err) {
-    // Chain not added yet — add it
     if (err.code === 4902) {
       await window.ethereum.request({
         method: 'wallet_addEthereumChain',
@@ -40,7 +26,7 @@ async function ensureSepolia() {
         }],
       });
     } else {
-      throw new Error('Please switch to Sepolia network in MetaMask');
+      throw new Error('Please switch to Sepolia in MetaMask');
     }
   }
 }
@@ -53,52 +39,62 @@ export default function ConnectWallet() {
     setError('');
     try {
       if (!window.ethereum) {
-        setError('MetaMask not detected. Install MetaMask to continue.');
+        setError('MetaMask not detected. Please install MetaMask to continue.');
         return;
       }
-
       setStatus('connecting');
       const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
       const address = accounts[0];
-
       await ensureSepolia();
-
       setStatus('signing');
       const { message } = await fetchNonce(address);
-
       const signature = await window.ethereum.request({
         method: 'personal_sign',
         params: [message, address],
       });
-
       setStatus('done');
       await loginWithSignature(address, signature);
       window.location.href = '/dashboard';
     } catch (err) {
       setStatus('error');
-      setError(err.message || 'Something went wrong');
+      setError(err.message || 'Authentication failed. Please try again.');
     }
   };
 
   const labels = {
-    idle: 'CONNECT METAMASK',
-    connecting: 'CONNECTING...',
-    signing: 'SIGN IN METAMASK...',
-    done: 'REDIRECTING...',
-    error: 'TRY AGAIN',
+    idle:       'Connect MetaMask',
+    connecting: 'Connecting...',
+    signing:    'Sign in MetaMask...',
+    done:       'Redirecting...',
+    error:      'Retry Connection',
   };
 
+  const isLoading = status === 'connecting' || status === 'signing' || status === 'done';
+
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '16px' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px' }}>
       <button
-        style={status === 'idle' || status === 'error' ? btn : btnOutline}
         onClick={connect}
-        disabled={status === 'connecting' || status === 'signing' || status === 'done'}
+        disabled={isLoading}
+        className="gs-btn-primary"
+        style={{ minWidth: '200px' }}
       >
-        {labels[status]}
+        {isLoading ? (
+          <>
+            <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#fff', display: 'inline-block' }} className="animate-live-dot" />
+            {labels[status]}
+          </>
+        ) : (
+          <>
+            {labels[status]}
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.75">
+              <path d="M3 8h10M9 4l4 4-4 4" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </>
+        )}
       </button>
       {error && (
-        <p style={{ color: '#ff4141', fontFamily: 'inherit', fontSize: '13px', margin: 0, borderLeft: '3px solid #ff4141', paddingLeft: '10px' }}>
+        <p style={{ fontSize: '12px', color: '#c0392b', maxWidth: '320px', textAlign: 'center', lineHeight: 1.5 }}>
           {error}
         </p>
       )}
