@@ -17,43 +17,27 @@ export default function CookieBanner() {
   if (!visible) return null;
 
   return (
-    <div style={{
-      position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 9999,
-      background: '#000', borderTop: '2px solid #00ff41',
-      padding: '20px 32px', display: 'flex', alignItems: 'center',
-      justifyContent: 'space-between', gap: '24px', flexWrap: 'wrap',
-    }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-        <span style={{ color: '#00ff41', fontSize: '20px', fontWeight: 900 }}>⬛ COOKIES</span>
-        <span style={{ color: '#fff', fontSize: '13px', maxWidth: '520px', lineHeight: 1.6 }}>
-          PaperDEX uses cookies to save your session and keep you logged in.
-          No tracking. No ads. Just auth.
-        </span>
-      </div>
-      <div style={{ display: 'flex', gap: '12px' }}>
-        <button
-          onClick={accept}
-          style={{
-            background: '#00ff41', color: '#000', border: 'none',
-            padding: '10px 28px', fontFamily: 'inherit', fontWeight: 900,
-            fontSize: '13px', cursor: 'pointer', letterSpacing: '0.1em',
-            textTransform: 'uppercase',
-          }}
-        >
-          ACCEPT
-        </button>
+    <div className="fixed bottom-4 left-4 right-4 sm:left-auto sm:right-6 sm:max-w-md z-50 bg-white/95 backdrop-blur-md border border-[#111111]/[0.08] p-5 rounded-2xl shadow-lg animate-hero-1 flex flex-col gap-4">
+      <p className="text-xs text-[#555555] leading-relaxed font-normal">
+        PaperDEX uses essential session cookies solely for wallet authentication. No tracking or ads.
+      </p>
+
+      <div className="flex items-center gap-3 justify-end">
         <button
           onClick={() => setVisible(false)}
-          style={{
-            background: 'transparent', color: '#00ff41',
-            border: '2px solid #00ff41', padding: '10px 20px',
-            fontFamily: 'inherit', fontWeight: 700, fontSize: '13px',
-            cursor: 'pointer', letterSpacing: '0.1em', textTransform: 'uppercase',
-          }}
+          className="text-xs text-[#777777] hover:text-[#111111] px-3 py-1.5 transition-colors cursor-pointer"
         >
-          DISMISS
+          Dismiss
+        </button>
+        <button
+          onClick={accept}
+          className="text-xs font-medium px-4 py-1.5 bg-[#111111] text-white rounded-full hover:bg-[#333333] transition-colors cursor-pointer"
+        >
+          Accept
         </button>
       </div>
     </div>
   );
 }
+
+

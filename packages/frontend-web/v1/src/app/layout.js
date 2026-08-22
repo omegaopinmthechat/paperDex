@@ -1,22 +1,22 @@
-import { Space_Mono } from 'next/font/google';
+import { Inter } from 'next/font/google';
 import './globals.css';
 import CookieBanner from './components/CookieBanner';
 
-const courier = Space_Mono({
-  weight: ['400', '700'],
+const inter = Inter({
   subsets: ['latin'],
-  variable: '--font-courier',
+  variable: '--font-sans',
+  display: 'swap',
 });
 
 export const metadata = {
-  title: 'PaperDEX',
-  description: 'Paper trading DEX on Sepolia',
+  title: 'PaperDEX — Institutional Paper Trading',
+  description: 'Simulate decentralized exchange trades on Sepolia Testnet with zero risk.',
 };
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className={courier.variable}>
-      <body style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+    <html lang="en" className={inter.variable}>
+      <body className={`${inter.variable} antialiased`}>
         {children}
         <CookieBanner />
       </body>
