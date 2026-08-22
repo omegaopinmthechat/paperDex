@@ -1,0 +1,35 @@
+@import "tailwindcss";
+
+:root {
+  --green: #00ff41;
+  --green-dark: #00cc33;
+  --green-dim: #00ff4122;
+  --black: #000000;
+  --white: #ffffff;
+  --border: #00ff41;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background: var(--black);
+  color: var(--white);
+  font-family: 'Space Mono', 'Courier New', Courier, monospace;
+}
+
+::selection {
+  background: var(--green);
+  color: var(--black);
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--black);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--green);
+}
