@@ -1,20 +1,36 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState, useSyncExternalStore } from 'react';
+
+const subscribe = (callback) => {
+  window.addEventListener('storage', callback);
+  return () => window.removeEventListener('storage', callback);
+};
+
+const getSnapshot = () => {
+  try {
+    return localStorage.getItem('pd_cookies_accepted') === '1';
+  } catch {
+    return true;
+  }
+};
+
+const getServerSnapshot = () => true;
 
 export default function CookieBanner() {
-  const [visible, setVisible] = useState(false);
+  const isAccepted = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
+  const [dismissed, setDismissed] = useState(false);
 
-  useEffect(() => {
-    if (!localStorage.getItem('pd_cookies_accepted')) setVisible(true);
-  }, []);
+  if (isAccepted || dismissed) return null;
 
   const accept = () => {
-    localStorage.setItem('pd_cookies_accepted', '1');
-    setVisible(false);
+    try {
+      localStorage.setItem('pd_cookies_accepted', '1');
+    } catch {
+      // ignore
+    }
+    setDismissed(true);
   };
-
-  if (!visible) return null;
 
   return (
     <div className="fixed bottom-4 left-4 right-4 sm:left-auto sm:right-6 sm:max-w-md z-50 bg-white/95 backdrop-blur-md border border-[#111111]/[0.08] p-5 rounded-2xl shadow-lg animate-hero-1 flex flex-col gap-4">
@@ -24,7 +40,7 @@ export default function CookieBanner() {
 
       <div className="flex items-center gap-3 justify-end">
         <button
-          onClick={() => setVisible(false)}
+          onClick={() => setDismissed(true)}
           className="text-xs text-[#777777] hover:text-[#111111] px-3 py-1.5 transition-colors cursor-pointer"
         >
           Dismiss
@@ -39,5 +55,3 @@ export default function CookieBanner() {
     </div>
   );
 }
-
-
