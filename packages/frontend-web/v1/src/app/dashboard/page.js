@@ -7,7 +7,7 @@ import { fetchPortfolio } from '../actions/portfolio';
 
 export const metadata = {
   title: 'Terminal Dashboard — PaperDEX',
-  description: 'PaperDEX Account Terminal and Execution Desk on Sepolia Testnet.',
+  description: 'PaperDEX Account Terminal and Execution Desk.',
 };
 
 export default async function Dashboard() {
@@ -52,7 +52,7 @@ export default async function Dashboard() {
           <div className="animate-hero-1" style={{ marginBottom: '36px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: '16px' }}>
             <div>
               <p style={{ fontSize: '11px', fontWeight: 600, letterSpacing: '0.22em', color: '#888', textTransform: 'uppercase', marginBottom: '8px' }}>
-                Institutional Desk · Sepolia Testnet
+                Institutional Desk
               </p>
               <h1 style={{ fontSize: 'clamp(28px, 4vw, 48px)', fontWeight: 300, letterSpacing: '-0.03em', color: '#0F0F0F', lineHeight: 1.1 }}>
                 Account Terminal.
@@ -218,8 +218,7 @@ export default async function Dashboard() {
 
       <footer style={{ borderTop: '1px solid rgba(15,15,15,0.08)', flexShrink: 0 }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '18px 32px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '11px', color: '#aaa' }}>
-          <span>© 2025 PaperDEX</span>
-          <span>Sepolia Testnet</span>
+          <span>© 2026 PaperDEX</span>
         </div>
       </footer>
     </div>

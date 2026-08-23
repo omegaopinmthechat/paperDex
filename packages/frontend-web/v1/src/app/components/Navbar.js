@@ -23,9 +23,13 @@ export default function Navbar({ walletAddress }) {
         
         {/* Brand & Nav */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '36px' }}>
-          <Link href={walletAddress ? '/dashboard' : '/'} style={{ textDecoration: 'none', color: '#0F0F0F', fontWeight: 700, fontSize: '15px', letterSpacing: '0.16em', display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span style={{ display: 'inline-flex', width: '22px', height: '22px', borderRadius: '6px', background: '#0F0F0F', color: '#F8F6F1', alignItems: 'center', justifyContent: 'center', fontSize: '11px', fontWeight: 800 }}>P</span>
-            PAPERDEX
+          <Link href={walletAddress ? '/dashboard' : '/'} style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/logo.png"
+              alt="PaperDEX"
+              style={{ height: '30px', width: 'auto', display: 'block' }}
+            />
           </Link>
 
           <nav style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
@@ -57,7 +61,7 @@ export default function Navbar({ walletAddress }) {
         <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px', color: '#666', letterSpacing: '0.04em', background: 'rgba(15,15,15,0.04)', padding: '5px 12px', borderRadius: '9999px' }}>
             <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#16a34a', display: 'inline-block' }} className="animate-live-dot" />
-            <span style={{ fontWeight: 500 }}>Sepolia</span>
+            <span style={{ fontWeight: 500 }}>Live Network</span>
           </div>
 
           {shortWallet ? (

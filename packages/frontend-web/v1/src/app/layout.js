@@ -10,7 +10,12 @@ const inter = Inter({
 
 export const metadata = {
   title: 'PaperDEX — Institutional Paper Trading',
-  description: 'Simulate decentralized exchange trades on Sepolia Testnet with zero risk.',
+  description: 'Simulate decentralized exchange trades with zero risk.',
+  icons: {
+    icon: '/favicon.ico',
+    shortcut: '/favicon.ico',
+    apple: '/icon.png',
+  },
 };
 
 export default function RootLayout({ children }) {
