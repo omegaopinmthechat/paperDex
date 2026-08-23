@@ -16,11 +16,12 @@ Supabase stores **application** data only. Blockchain remains authoritative for 
 - `trades`: id, user_id, token, side, amount, price, usd_amount, nonce, tx_hash, status, created_at
 - `quotes`: id, user_id, token, side, amount, price, nonce, deadline, quote_signature, created_at
 - `market_data`: id, symbol, price, change_24h, volume_24h, updated_at
-- `transactions`: id, user_id, tx_hash, type, status, block_number, created_at
+- `transactions`: id (UUID PK), user_id (UUID NOT NULL → paperdex.users), tx_hash (TEXT NOT NULL), type (TEXT NOT NULL), token (TEXT NOT NULL), direction (TEXT NOT NULL, CHECK IN ('CREDIT','DEBIT')), amount (NUMERIC NOT NULL), status (TEXT NOT NULL), block_number (BIGINT), created_at (TIMESTAMPTZ NOT NULL DEFAULT NOW())
+  - Schema namespace: `paperdex` (Supabase client must use `db: { schema: 'paperdex' }` — confirmed in `infrastructure/database/client.js`)
 
 ## Files
 - `infrastructure/database/supabase.js` — **PLANNED**. Supabase client instantiation only.
-- `infrastructure/database/client.js` — **PLANNED**. Thin wrapper/export used by repositories.
+- `infrastructure/database/client.js` — **EXISTS**. Supabase client targeting `paperdex` schema (`db: { schema: 'paperdex' }`). Used by all repositories.
 - `config/database.js` — **PLANNED**. Env-driven config (URL, keys) for the client above — no query logic.
 - Every `*.repository.js` across modules — **PLANNED**. Each repository owns exactly one table (or a small tightly-related set); it is the *only* file allowed to run Supabase queries against that table.
 

@@ -3,7 +3,7 @@
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 
-const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+const API = process.env.NEXT_PUBLIC_API_URL;
 
 export async function fetchNonce(walletAddress) {
   const res = await fetch(`${API}/api/v1/auth/nonce`, {
@@ -24,8 +24,6 @@ export async function loginWithSignature(walletAddress, signature) {
   });
   const json = await res.json();
 
-  console.log('LOGIN STATUS:', res.status);
-  console.log('LOGIN RESPONSE:', JSON.stringify(json, null, 2));
 
   if (!json.success) {
     throw new Error(json.error?.message || 'Login failed');

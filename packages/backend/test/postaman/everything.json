@@ -1,0 +1,393 @@
+{
+  "info": {
+    "name": "PaperDEX Backend",
+    "_postman_id": "paperdex-v1",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:5000/api/v1" },
+    { "key": "jwt", "value": "" },
+    { "key": "walletAddress", "value": "" },
+    { "key": "nonce", "value": "" },
+    { "key": "nonceMessage", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "Health",
+      "item": [
+        {
+          "name": "GET / — server alive",
+          "request": {
+            "method": "GET",
+            "url": "http://localhost:5000/"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('status ok', () => pm.expect(pm.response.json().status).to.eql('ok'));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "1. POST /auth/nonce — get nonce",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/auth/nonce",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{ \"walletAddress\": \"{{walletAddress}}\" }"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 200', () => pm.response.to.have.status(200));",
+                  "const body = pm.response.json();",
+                  "pm.test('success true', () => pm.expect(body.success).to.be.true);",
+                  "pm.test('has nonce', () => pm.expect(body.data.nonce).to.be.a('string'));",
+                  "pm.test('has message', () => pm.expect(body.data.message).to.be.a('string'));",
+                  "pm.collectionVariables.set('nonce', body.data.nonce);",
+                  "pm.collectionVariables.set('nonceMessage', body.data.message);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "1b. POST /auth/nonce — missing walletAddress (validation error)",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/auth/nonce",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{}" }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 400', () => pm.response.to.have.status(400));",
+                  "const body = pm.response.json();",
+                  "pm.test('success false', () => pm.expect(body.success).to.be.false);",
+                  "pm.test('has error code', () => pm.expect(body.error.code).to.be.a('string'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "1c. POST /auth/nonce — invalid address format",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/auth/nonce",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{ \"walletAddress\": \"notanaddress\" }" }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 400', () => pm.response.to.have.status(400));",
+                  "pm.test('success false', () => pm.expect(pm.response.json().success).to.be.false);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "2. POST /auth/login — sign & login (manual step)",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/auth/login",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{ \"walletAddress\": \"{{walletAddress}}\", \"signature\": \"<PASTE_SIGNATURE_HERE>\" }"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 200', () => pm.response.to.have.status(200));",
+                  "const body = pm.response.json();",
+                  "pm.test('success true', () => pm.expect(body.success).to.be.true);",
+                  "pm.test('has token', () => pm.expect(body.data.token).to.be.a('string'));",
+                  "pm.test('has user id', () => pm.expect(body.data.user.id).to.be.a('string'));",
+                  "pm.collectionVariables.set('jwt', body.data.token);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "2b. POST /auth/login — wrong signature",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/auth/login",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{ \"walletAddress\": \"{{walletAddress}}\", \"signature\": \"0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef1b\" }"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 401', () => pm.response.to.have.status(401));",
+                  "pm.test('success false', () => pm.expect(pm.response.json().success).to.be.false);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "2c. POST /auth/login — replay same nonce (after successful login)",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/auth/login",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{ \"walletAddress\": \"{{walletAddress}}\", \"signature\": \"<SAME_SIGNATURE>\" }"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 401 — nonce already used', () => pm.response.to.have.status(401));",
+                  "pm.test('INVALID_NONCE code', () => pm.expect(pm.response.json().error.code).to.eql('INVALID_NONCE'));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Markets",
+      "item": [
+        {
+          "name": "GET /markets — all four tokens",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/markets"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 200', () => pm.response.to.have.status(200));",
+                  "const body = pm.response.json();",
+                  "pm.test('success true', () => pm.expect(body.success).to.be.true);",
+                  "pm.test('returns 4 tokens', () => pm.expect(body.data).to.have.lengthOf(4));",
+                  "const symbols = body.data.map(t => t.symbol);",
+                  "pm.test('has USDTP', () => pm.expect(symbols).to.include('USDTP'));",
+                  "pm.test('has BTCP',  () => pm.expect(symbols).to.include('BTCP'));",
+                  "pm.test('has ETHP',  () => pm.expect(symbols).to.include('ETHP'));",
+                  "pm.test('has SOLP',  () => pm.expect(symbols).to.include('SOLP'));",
+                  "body.data.forEach(t => {",
+                  "  pm.test(`${t.symbol} has numeric price`, () => pm.expect(t.price).to.be.a('number'));",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET /markets/USDTP — stable $1",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/markets/USDTP"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 200', () => pm.response.to.have.status(200));",
+                  "const d = pm.response.json().data;",
+                  "pm.test('symbol USDTP', () => pm.expect(d.symbol).to.eql('USDTP'));",
+                  "pm.test('price is 1', () => pm.expect(d.price).to.eql(1));",
+                  "pm.test('change24h is 0', () => pm.expect(d.change24h).to.eql(0));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET /markets/BTCP",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/markets/BTCP"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 200', () => pm.response.to.have.status(200));",
+                  "const d = pm.response.json().data;",
+                  "pm.test('symbol BTCP', () => pm.expect(d.symbol).to.eql('BTCP'));",
+                  "pm.test('price > 0', () => pm.expect(d.price).to.be.above(0));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET /markets/ETHP",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/markets/ETHP"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 200', () => pm.response.to.have.status(200));",
+                  "const d = pm.response.json().data;",
+                  "pm.test('symbol ETHP', () => pm.expect(d.symbol).to.eql('ETHP'));",
+                  "pm.test('price > 0', () => pm.expect(d.price).to.be.above(0));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET /markets/SOLP",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/markets/SOLP"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 200', () => pm.response.to.have.status(200));",
+                  "const d = pm.response.json().data;",
+                  "pm.test('symbol SOLP', () => pm.expect(d.symbol).to.eql('SOLP'));",
+                  "pm.test('price > 0', () => pm.expect(d.price).to.be.above(0));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET /markets/UNKNOWN — 404",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/markets/UNKNOWN"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 404', () => pm.response.to.have.status(404));",
+                  "pm.test('MARKET_NOT_FOUND', () => pm.expect(pm.response.json().error.code).to.eql('MARKET_NOT_FOUND'));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Portfolio",
+      "item": [
+        {
+          "name": "GET /portfolio — authenticated",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/portfolio",
+            "header": [{ "key": "Authorization", "value": "Bearer {{jwt}}" }]
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 200', () => pm.response.to.have.status(200));",
+                  "const body = pm.response.json();",
+                  "pm.test('success true', () => pm.expect(body.success).to.be.true);",
+                  "pm.test('returns 4 holdings', () => pm.expect(body.data).to.have.lengthOf(4));",
+                  "const symbols = body.data.map(h => h.symbol);",
+                  "['USDTP','BTCP','ETHP','SOLP'].forEach(s => {",
+                  "  pm.test(`has ${s}`, () => pm.expect(symbols).to.include(s));",
+                  "});",
+                  "body.data.forEach(h => {",
+                  "  pm.test(`${h.symbol} has balance string`, () => pm.expect(h.balance).to.be.a('string'));",
+                  "  pm.test(`${h.symbol} has numeric price`, () => pm.expect(h.price).to.be.a('number'));",
+                  "  pm.test(`${h.symbol} has usdValue`, () => pm.expect(h.usdValue).to.not.be.undefined);",
+                  "});",
+                  "const usdtp = body.data.find(h => h.symbol === 'USDTP');",
+                  "pm.test('USDTP balance >= 100000 after starter grant', () => pm.expect(parseFloat(usdtp.balance)).to.be.at.least(100000));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET /portfolio — no token (401)",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/portfolio"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 401', () => pm.response.to.have.status(401));",
+                  "pm.test('success false', () => pm.expect(pm.response.json().success).to.be.false);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET /portfolio — bad token (401)",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/portfolio",
+            "header": [{ "key": "Authorization", "value": "Bearer totallyinvalidtoken" }]
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 401', () => pm.response.to.have.status(401));",
+                  "pm.test('INVALID_TOKEN code', () => pm.expect(pm.response.json().error.code).to.eql('INVALID_TOKEN'));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

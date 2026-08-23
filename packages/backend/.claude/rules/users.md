@@ -11,8 +11,8 @@ App-level user records keyed to `wallet_address` (Supabase `users` table). A row
 ## Files
 - `user.routes.js` — **PLANNED**.
 - `user.controller.js` — **PLANNED**. Thin, same pattern as auth: parse → service → response helper.
-- `user.service.js` — **PLANNED**. Business logic only; no direct Supabase calls.
-- `user.repository.js` — **PLANNED**. The only file that queries the `users` table.
+- `user.service.js` — **EXISTS**. `ensureStarterBalance(walletAddress)`: checks `hasReceivedStartingBalance` on-chain; if false, calls `token.service.grantStartingBalance`, then writes a `STARTER_GRANT` row to `paperdex.transactions` via `blockchain.repository`. Race-condition revert (`AlreadyReceivedStartingBalance`) treated as success.
+- `user.repository.js` — **EXISTS**. `findByWalletAddress(walletAddress)` — queries `paperdex.users` table.
 - `user.validator.js` — **PLANNED**.
 
 ## Rules

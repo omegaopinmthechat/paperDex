@@ -20,6 +20,8 @@ const env = {
   JWT_EXPIRES_IN: process.env.JWT_EXPIRES_IN || '7d',
   NONCE_TTL_SECONDS: parseInt(process.env.NONCE_TTL_SECONDS || '300', 10),
   COINGECKO_URL: required('COINGECKO_URL'),
+  SEPOLIA_RPC_URL: required('SEPOLIA_RPC_URL'),
+  RELAYER_PRIVATE_KEY: required('RELAYER_PRIVATE_KEY'),
 };
 
 export default env;

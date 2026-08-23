@@ -6,6 +6,7 @@ import { AppError } from '../../utils/errors.js';
 import STATUS_CODES from '../../constants/statusCodes.js';
 import { generateNonce, nonceExpiresAt, buildNonceMessage } from './nonce.service.js';
 import * as repo from './auth.repository.js';
+import { ensureStarterBalance } from '../users/user.service.js';
 
 export const requestNonce = async (walletAddress) => {
   const address = ethers.getAddress(walletAddress); // normalise + validate checksum
@@ -40,6 +41,9 @@ export const login = async (walletAddress, signature) => {
 
   const user = await repo.upsertUser(address);
   const token = jwt.sign({ sub: user.id, wallet: address }, env.JWT_SECRET, { expiresIn: env.JWT_EXPIRES_IN });
+
+  // Fire-and-forget — don't block the login response on ~12s Sepolia block time
+  ensureStarterBalance(address).catch(() => {});
 
   return { token, user };
 };

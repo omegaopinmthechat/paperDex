@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { fetchNonce, loginWithSignature } from '../actions/auth';
 
 const SEPOLIA_CHAIN_ID = '0xaa36a7';
@@ -32,6 +33,7 @@ async function ensureSepolia() {
 }
 
 export default function ConnectWallet() {
+  const router = useRouter();
   const [status, setStatus] = useState('idle');
   const [error, setError] = useState('');
 
@@ -54,7 +56,8 @@ export default function ConnectWallet() {
       });
       setStatus('done');
       await loginWithSignature(address, signature);
-      window.location.href = '/dashboard';
+      router.push('/dashboard');
+      router.refresh();
     } catch (err) {
       setStatus('error');
       setError(err.message || 'Authentication failed. Please try again.');
