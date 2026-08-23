@@ -40,7 +40,6 @@ export default function PortfolioHoldings({ initialData }) {
   }, []);
 
   useEffect(() => {
-    setLastUpdated(new Date());
     const id = setInterval(refresh, 30_000);
     return () => clearInterval(id);
   }, [refresh]);
