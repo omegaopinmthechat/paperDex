@@ -22,12 +22,12 @@ PaperDEX is a paper-trading DEX. The Solidity contracts (V1) are already deploye
 | `src/constants/errorCodes.js`, `statusCodes.js` | EXISTS | `.claude/rules/error-handling.md` |
 | `src/modules/auth/**`, `src/middleware/auth.middleware.js` | PLANNED | `.claude/rules/auth.md` |
 | `src/modules/users/**` | PLANNED | `.claude/rules/users.md` |
-| `src/modules/markets/**`, `src/modules/oracle/**` | PLANNED | `.claude/rules/markets-oracle.md` |
+| `src/modules/markets/**`, `src/modules/oracle/**` | EXISTS | `.claude/rules/markets-oracle.md` |
 | `src/modules/trading/**` | PLANNED | `.claude/rules/trading.md` |
 | `src/modules/portfolio/**` | PLANNED | `.claude/rules/portfolio.md` |
 | `src/modules/blockchain/**`, `src/infrastructure/blockchain/**` | PLANNED | `.claude/rules/blockchain.md` |
 | `src/infrastructure/database/**`, any `*.repository.js` | PLANNED | `.claude/rules/database.md` |
-| `src/utils/response.js`, `utils/errors.js`, `middleware/error.middleware.js` | PLANNED | `.claude/rules/error-handling.md` |
+| `src/utils/response.js`, `utils/errors.js`, `middleware/error.middleware.js` | EXISTS | `.claude/rules/error-handling.md` |
 | `src/config/**`, `app.js`, `server.js`, `routes/index.js` | PLANNED | §7 below (low churn, kept here) |
 
 **Rule:** the first time a session creates or substantially edits a file in a PLANNED row, it must (a) flip that row to `EXISTS` here and (b) write 2-4 lines of what the file actually does in the matching rules file. Never describe unwritten code as if it already exists.
@@ -82,4 +82,7 @@ When a session fixes a bug, gets corrected, or finds a pattern not written down 
 - `routes/index.js`: mounts each module's `*.routes.js` under `/api/v1`.
 
 ## 8. Lessons Learned log
-_(empty — first entry added by whichever session first fixes something)_
+2025-01-01 — error.middleware.js — must be registered after routes in app.js or next(err) calls fall through unhandled → always mount errorMiddleware as the last app.use() in app.js.
+
+## 9. External URL rule — strictly enforced
+No URL of any kind — API base URLs, RPC endpoints, third-party service URLs — is ever written inside `src/` code, even if it is public and not a secret. Every external URL must live in `.env` and be loaded through `config/env.js` using `required()`. There are no fallback defaults (`||`) for URLs — if it is missing from `.env` the server must fail at boot, not at request time. The flow is always: `.env` → `config/env.js` (via `required()`) → the one file that uses it. Violating this rule (hardcoding a URL anywhere in `src/`, or adding a `|| 'https://...'` fallback) is treated the same as hardcoding a secret.

@@ -11,10 +11,14 @@ paths:
 - **markets/**: serves `GET /api/v1/markets` and `GET /api/v1/markets/:symbol`, backed by the `market_data` table and the oracle cache.
 
 ## Files
-- `oracle/price.provider.js` — **PLANNED**. The only file that calls the external price API.
-- `oracle/price.service.js` — **PLANNED**. Business logic sitting in front of the provider + cache; every other module reads prices through this, not through `price.provider.js` directly.
-- `oracle/price.cache.js` — **PLANNED**. Short-lived in-memory (or Supabase-backed) cache to avoid hammering the external provider; needs a staleness check feeding `ERROR_CODES.STALE_PRICE`.
-- `markets/market.controller.js`, `market.service.js`, `market.repository.js`, `market.routes.js`, `market.validator.js` — **PLANNED**. Standard controller→service→repository layering; `market.repository.js` is the only file querying `market_data`.
+- `oracle/price.provider.js` — **EXISTS**. Single CoinGecko call fetches `bitcoin,ethereum,solana` → usd + 24h change in one request. Returns `{ bitcoin, ethereum, solana }` map each with `{ price, change24h, fetchedAt }`. Throws `AppError(PRICE_FETCH_FAILED)` on network error, non-200, or malformed response.
+- `oracle/price.cache.js` — **EXISTS**. Single shared in-memory TTL cache (20 s) for all three assets — one inflight promise deduplicates concurrent refreshes. Returns `{ ...prices, stale: true }` if refresh fails but prior values exist; throws `PRICE_UNAVAILABLE` if no cache exists at all.
+- `oracle/price.service.js` — **EXISTS**. Public interface. `getPrice(symbol)`: BTCP/ETHP/SOLP → real prices via cache; USDTP → hardcoded 1.00; unknown → `MARKET_NOT_FOUND`. Stale → throws `STALE_PRICE`. `getAllPrices()` → returns all four symbols in one call.
+- `markets/market.controller.js` — **EXISTS**. `getMarket` handles `GET /:symbol`; `getMarkets` handles `GET /`. Both call service, send `sendSuccess`, pass errors to `next(err)`.
+- `markets/market.service.js` — **EXISTS**. `getMarketBySymbol(symbol)` and `getAllMarkets()` — both delegate to `oracle/price.service.js` only.
+- `markets/market.routes.js` — **EXISTS**. Mounts `GET /` (all markets) and `GET /:symbol`.
+- `markets/market.validator.js` — **EXISTS**. Zod schema whitelisting BTCP, ETHP, SOLP, USDTP for the `:symbol` param.
+- `markets/market.repository.js` — **PLANNED**. Not yet needed for price-read path.
 
 ## Rules
 1. **Trading, portfolio, and markets must all read prices through `oracle/price.service.js`.** Nobody else calls the external provider directly — one source of truth, one place to handle provider failure / staleness.
