@@ -1,4 +1,9 @@
-import 'dotenv/config';
+import dotenv from 'dotenv';
+import { fileURLToPath } from 'url';
+import { dirname, resolve } from 'path';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+dotenv.config({ path: resolve(__dirname, '../../.env') });
 
 const required = (key) => {
   const val = process.env[key];
@@ -14,6 +19,7 @@ const env = {
   JWT_SECRET: required('JWT_SECRET'),
   JWT_EXPIRES_IN: process.env.JWT_EXPIRES_IN || '7d',
   NONCE_TTL_SECONDS: parseInt(process.env.NONCE_TTL_SECONDS || '300', 10),
+  COINGECKO_URL: required('COINGECKO_URL'),
 };
 
 export default env;
