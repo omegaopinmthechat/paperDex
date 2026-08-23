@@ -65,46 +65,30 @@ const formatChange = (change) => {
 
 export default function MarketDesk({ initialMarkets = [] }) {
   const [markets, setMarkets] = useState(initialMarkets);
-  const [loading, setLoading] = useState(false);
-  const [lastUpdated, setLastUpdated] = useState(null);
-  const [autoRefresh, setAutoRefresh] = useState(true);
-  const [countdown, setCountdown] = useState(15);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedAsset, setSelectedAsset] = useState(null);
   const [copiedSymbol, setCopiedSymbol] = useState(null);
   const [filterType, setFilterType] = useState('ALL'); // 'ALL' | 'MAJORS' | 'STABLE'
 
   const refreshMarkets = useCallback(async () => {
-    setLoading(true);
     try {
       const res = await fetchMarkets();
       if (res.success && Array.isArray(res.data) && res.data.length > 0) {
         setMarkets(res.data);
-        setLastUpdated(Date.now());
       }
     } catch (err) {
       console.error('Failed to reload markets:', err);
-    } finally {
-      setLoading(false);
-      setCountdown(15);
     }
   }, []);
 
-  // Polling timer
+  // Silent background polling every 15 seconds
   useEffect(() => {
-    if (!autoRefresh) return;
     const interval = setInterval(() => {
-      setCountdown((prev) => {
-        if (prev <= 1) {
-          refreshMarkets();
-          return 15;
-        }
-        return prev - 1;
-      });
-    }, 1000);
+      refreshMarkets();
+    }, 15000);
 
     return () => clearInterval(interval);
-  }, [autoRefresh, refreshMarkets]);
+  }, [refreshMarkets]);
 
   const copyToClipboard = (text, symbol) => {
     navigator.clipboard.writeText(text);
@@ -152,49 +136,10 @@ export default function MarketDesk({ initialMarkets = [] }) {
           </p>
         </div>
 
-        {/* Controls: Auto-refresh + Manual Button */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', background: 'rgba(255,255,255,0.75)', border: '1px solid rgba(15,15,15,0.08)', padding: '6px 14px', borderRadius: '9999px', backdropFilter: 'blur(6px)' }}>
-          <button
-            onClick={() => setAutoRefresh(!autoRefresh)}
-            style={{
-              background: 'transparent',
-              border: 'none',
-              cursor: 'pointer',
-              fontSize: '12px',
-              color: autoRefresh ? '#0F0F0F' : '#999',
-              fontWeight: 500,
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px',
-            }}
-          >
-            <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: autoRefresh ? '#16a34a' : '#bbb' }} className={autoRefresh ? 'animate-live-dot' : ''} />
-            {autoRefresh ? `Auto-sync: ${countdown}s` : 'Sync Paused'}
-          </button>
-
-          <span style={{ color: 'rgba(15,15,15,0.15)' }}>|</span>
-
-          <button
-            onClick={refreshMarkets}
-            disabled={loading}
-            style={{
-              background: '#0F0F0F',
-              color: '#fff',
-              border: 'none',
-              borderRadius: '9999px',
-              padding: '4px 12px',
-              fontSize: '11px',
-              fontWeight: 500,
-              cursor: loading ? 'not-allowed' : 'pointer',
-              opacity: loading ? 0.6 : 1,
-              transition: 'all 0.15s ease',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '4px',
-            }}
-          >
-            {loading ? 'Refreshing...' : '↻ Refresh'}
-          </button>
+        {/* Live Oracle Status Pill */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(255,255,255,0.75)', border: '1px solid rgba(15,15,15,0.08)', padding: '6px 14px', borderRadius: '9999px', backdropFilter: 'blur(6px)', fontSize: '12px', color: '#444' }}>
+          <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#16a34a' }} className="animate-live-dot" />
+          <span>Spot Pricing: <strong style={{ color: '#0F0F0F' }}>Live Feed</strong></span>
         </div>
       </div>
 
@@ -204,9 +149,6 @@ export default function MarketDesk({ initialMarkets = [] }) {
           <h2 style={{ fontSize: '13px', fontWeight: 600, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#444' }}>
             Featured Synthetic Majors (Real Spot Values)
           </h2>
-          <span style={{ fontSize: '12px', color: '#888' }}>
-            Synced: {lastUpdated ? new Date(lastUpdated).toLocaleTimeString() : 'Live'}
-          </span>
         </div>
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: '20px' }}>

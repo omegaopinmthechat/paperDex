@@ -15,12 +15,12 @@ Wraps all on-chain reads/writes to the PaperDEX contracts. Every other module (t
 - `blockchain.service.js` — **PLANNED**. Shared low-level helpers (get contract instance, wait for tx, etc.).
 - `dex.service.js` — **PLANNED**. PaperDEX contract calls: `executeTrade()`, `getTradeEvents()`, `getTransaction()`.
 - `vault.service.js` — **PLANNED**. Vault-specific reads/writes: `getVaultBalance()`.
-- `token.service.js` — **PLANNED**. ERC20-style token reads: `getTokenBalance()`, used by portfolio.
-- `relayer.service.js` — **PLANNED**. Signs and submits transactions using `RELAYER_PRIVATE_KEY` so users don't need Sepolia ETH. This key exists only in the backend env.
-- `blockchain.repository.js` — **PLANNED**. Any Supabase writes tied to on-chain events (e.g. logging a `TradeExecuted` event) live here.
-- `infrastructure/blockchain/provider.js` — **PLANNED**. Sepolia RPC provider setup.
-- `infrastructure/blockchain/wallet.js` — **PLANNED**. Relayer + quote-signer wallet instances from env-loaded private keys.
-- `infrastructure/blockchain/contracts.js` — **PLANNED**. Loads ABI + address from `packages/contracts/addresses/sepolia.json`, returns typed contract instances.
+- `token.service.js` — **EXISTS**. `hasReceivedStartingBalance(address)` (free read, no gas) and `grantStartingBalance(address)` (signs via relayer wallet, parses `StartingBalanceGranted` event from receipt, returns `{ txHash, blockNumber, amount, status }`). Uses concrete PaperUSD ABI from Hardhat artifact — NOT IPaperToken.
+- `relayer.service.js` — **EXISTS**. `sendAndWait(txPromise)` — submits a signed tx and waits 1 confirmation, returns `{ txHash, blockNumber, receipt }`.
+- `blockchain.repository.js` — **EXISTS**. `insertTransaction({userId, txHash, type, token, direction, amount, status, blockNumber})` — writes to `paperdex.transactions`.
+- `infrastructure/blockchain/provider.js` — **EXISTS**. Sepolia `JsonRpcProvider` singleton from `env.SEPOLIA_RPC_URL`.
+- `infrastructure/blockchain/wallet.js` — **EXISTS**. Exports `relayerWallet` (also holds `ONBOARDING_ROLE` on Sepolia — confirmed on-chain 2025-08-08). Address: `0xDb8B9b39d7215D82E6ceaFEB84e9F5B17F790213`.
+- `infrastructure/blockchain/contracts.js` — **EXISTS**. Loads PaperUSD ABI from Hardhat artifact (`artifacts/contracts/tokens/PaperUSD.sol/PaperUSD.json`) and address from `deployments/sepolia.json`. Exports `paperUsdContract` (read-only) and `paperUsdWithSigner` (connected to relayerWallet).
 
 ## Rules
 1. No module outside `blockchain/` and `infrastructure/blockchain/` calls ethers.js directly. If trading, portfolio, or anything else needs a chain read, it calls into this module's exported functions — no exceptions.
