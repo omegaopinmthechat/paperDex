@@ -9,7 +9,7 @@ const inter = Inter({
 });
 
 export const metadata = {
-  title: 'PaperDEX — Institutional Paper Trading',
+  title: 'PaperDEX: paper trading',
   description: 'Simulate decentralized exchange trades with zero risk.',
   icons: {
     icon: '/favicon.ico',
