@@ -182,20 +182,27 @@ export default async function Dashboard() {
               </div>
             </Link>
 
-            {/* Trade — coming soon */}
-            <div style={{
-              background: 'rgba(255,255,255,0.5)', border: '1px solid rgba(15,15,15,0.06)',
-              borderRadius: '16px', padding: '28px', display: 'flex',
-              flexDirection: 'column', justifyContent: 'space-between', minHeight: '190px',
+            {/* Trade — live */}
+            <Link href="/trade" style={{
+              textDecoration: 'none', background: 'rgba(255,255,255,0.85)',
+              border: '1px solid rgba(15,15,15,0.12)', borderRadius: '16px',
+              padding: '28px', display: 'flex', flexDirection: 'column',
+              justifyContent: 'space-between', minHeight: '190px',
+              transition: 'all 0.2s ease', boxShadow: '0 2px 12px rgba(0,0,0,0.02)',
             }}>
               <div>
-                <span style={{ fontSize: '16px', fontWeight: 600, color: '#0F0F0F', display: 'block', marginBottom: '8px' }}>Trade</span>
-                <p style={{ fontSize: '13px', color: '#888', lineHeight: 1.6 }}>Simulated market & limit swaps</p>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                  <span style={{ fontSize: '16px', fontWeight: 600, color: '#0F0F0F' }}>Trade</span>
+                  <span style={{ background: 'rgba(22,163,74,0.1)', color: '#16a34a', fontSize: '10px', fontWeight: 600, padding: '2px 6px', borderRadius: '4px' }}>LIVE</span>
+                </div>
+                <p style={{ fontSize: '13px', color: '#666', lineHeight: 1.6 }}>
+                  EIP-712 signed market trades settled on Sepolia. Zero gas for you.
+                </p>
               </div>
-              <div style={{ paddingTop: '20px', fontSize: '12px', color: '#bbb', display: 'flex', justifyContent: 'space-between' }}>
-                <span>In Development</span><span>→</span>
+              <div style={{ paddingTop: '20px', fontSize: '12px', color: '#0F0F0F', fontWeight: 500, display: 'flex', justifyContent: 'space-between' }}>
+                <span>Open Trade Desk</span><span>→</span>
               </div>
-            </div>
+            </Link>
 
             {/* History — coming soon */}
             <div style={{
