@@ -15,6 +15,7 @@ export default function Navbar({ walletAddress }) {
     { href: '/dashboard', label: 'Dashboard' },
     { href: '/markets', label: 'Markets' },
     { href: '/portfolio', label: 'Portfolio' },
+    { href: '/trade', label: 'Trade' },
   ];
 
   return (

@@ -23,7 +23,7 @@ PaperDEX is a paper-trading DEX. The Solidity contracts (V1) are already deploye
 | `src/modules/auth/**`, `src/middleware/auth.middleware.js` | EXISTS | `.claude/rules/auth.md` |
 | `src/modules/users/**` | EXISTS | `.claude/rules/users.md` |
 | `src/modules/markets/**`, `src/modules/oracle/**` | EXISTS | `.claude/rules/markets-oracle.md` |
-| `src/modules/trading/**` | PLANNED | `.claude/rules/trading.md` |
+| `src/modules/trading/**` | EXISTS | `.claude/rules/trading.md` |
 | `src/modules/portfolio/**` | PLANNED | `.claude/rules/portfolio.md` |
 | `src/modules/blockchain/**`, `src/infrastructure/blockchain/**` | EXISTS | `.claude/rules/blockchain.md` |
 | `src/infrastructure/database/**`, any `*.repository.js` | EXISTS | `.claude/rules/database.md` |
@@ -86,6 +86,7 @@ When a session fixes a bug, gets corrected, or finds a pattern not written down 
 2025-08-08 — infrastructure/blockchain/contracts.js — grantStartingBalance/hasReceivedStartingBalance/StartingBalanceGranted are NOT on IPaperToken; always use the concrete PaperUSD Hardhat artifact ABI for these calls, not a shared interface.
 2025-08-08 — ONBOARDING_ROLE wallet — confirmed on-chain: relayer wallet (0xDb8B9b39d7215D82E6ceaFEB84e9F5B17F790213) holds ONBOARDING_ROLE. Same key as DEPLOYER_PRIVATE_KEY in contracts/.env, now also RELAYER_PRIVATE_KEY in backend/.env.
 2025-08-08 — deployments/sepolia.json — actual path is packages/contracts/deployments/sepolia.json (not addresses/sepolia.json as CLAUDE.md §2 implied) → update any future references to use the deployments/ path.
+2026-09-05 — trading module — implemented. EIP-712 quote signing uses relayerWallet (= quoteSigner per deployments/sepolia.json). Nonces stored as TEXT in Supabase. Five new error codes added: QUOTE_EXPIRED, NONCE_ALREADY_USED, INVALID_QUOTE_SIGNATURE, INVALID_USER_SIGNATURE, UNSUPPORTED_TOKEN.
 
 ## 9. External URL rule — strictly enforced
 No URL of any kind — API base URLs, RPC endpoints, third-party service URLs — is ever written inside `src/` code, even if it is public and not a secret. Every external URL must live in `.env` and be loaded through `config/env.js` using `required()`. There are no fallback defaults (`||`) for URLs — if it is missing from `.env` the server must fail at boot, not at request time. The flow is always: `.env` → `config/env.js` (via `required()`) → the one file that uses it. Violating this rule (hardcoding a URL anywhere in `src/`, or adding a `|| 'https://...'` fallback) is treated the same as hardcoding a secret.
