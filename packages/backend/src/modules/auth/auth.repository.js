@@ -1,41 +1,45 @@
-import supabase from '../../infrastructure/database/client.js';
+import prisma from '../../infrastructure/database/client.js';
 
 export const upsertNonce = async (walletAddress, nonce, expiresAt) => {
-  const { error } = await supabase
-    .from('auth_nonces')
-    .upsert({ wallet_address: walletAddress, nonce, expires_at: expiresAt, used: false });
-  if (error) throw error;
+  await prisma.authNonce.upsert({
+    where: { walletAddress },
+    update: { nonce, expiresAt, used: false },
+    create: { walletAddress, nonce, expiresAt, used: false },
+  });
 };
 
 export const getNonce = async (walletAddress) => {
-  const { data, error } = await supabase
-    .from('auth_nonces')
-    .select('nonce, expires_at, used')
-    .eq('wallet_address', walletAddress)
-    .maybeSingle();
-  if (error) throw error;
-  return data; // null when no row found
+  const row = await prisma.authNonce.findUnique({
+    where: { walletAddress },
+    select: { nonce: true, expiresAt: true, used: true },
+  });
+  if (!row) return null;
+  // Return shape that matches what auth.service.js expects (snake_case keys)
+  return {
+    nonce: row.nonce,
+    expires_at: row.expiresAt,
+    used: row.used,
+  };
 };
 
 export const markNonceUsed = async (walletAddress) => {
-  const { error } = await supabase
-    .from('auth_nonces')
-    .update({ used: true })
-    .eq('wallet_address', walletAddress);
-  if (error) throw error;
+  await prisma.authNonce.update({
+    where: { walletAddress },
+    data: { used: true },
+  });
 };
 
 export const upsertUser = async (walletAddress) => {
-  const { error } = await supabase
-    .from('users')
-    .upsert({ wallet_address: walletAddress }, { onConflict: 'wallet_address', ignoreDuplicates: true });
-  if (error) throw error;
-
-  const { data, error: selectError } = await supabase
-    .from('users')
-    .select('id, wallet_address, created_at')
-    .eq('wallet_address', walletAddress)
-    .single();
-  if (selectError) throw selectError;
-  return data;
+  const user = await prisma.user.upsert({
+    where: { walletAddress },
+    update: {},
+    create: { walletAddress },
+    select: { id: true, walletAddress: true, createdAt: true },
+  });
+  // Return shape that matches what auth.service.js expects (snake_case keys)
+  return {
+    id: user.id,
+    wallet_address: user.walletAddress,
+    created_at: user.createdAt,
+  };
 };

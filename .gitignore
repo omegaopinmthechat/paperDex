@@ -4,3 +4,5 @@ node_modules/
 artifacts/
 cache/
 ppt/
+database_migration/
+packages/backend/prisma/migrations

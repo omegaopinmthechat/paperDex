@@ -16,12 +16,14 @@ export default function Navbar({ walletAddress }) {
     { href: '/markets', label: 'Markets' },
     { href: '/portfolio', label: 'Portfolio' },
     { href: '/trade', label: 'Trade' },
+    { href: '/api', label: 'Api' },
+    { href: '/pricing', label: 'Pricing' },
   ];
 
   return (
     <header style={{ borderBottom: '1px solid rgba(15,15,15,0.08)', background: 'rgba(248, 246, 241, 0.85)', backdropFilter: 'blur(8px)', position: 'sticky', top: 0, zIndex: 40, flexShrink: 0 }}>
       <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '16px 32px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        
+
         {/* Brand & Nav */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '36px' }}>
           <Link href={walletAddress ? '/dashboard' : '/'} style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -60,10 +62,7 @@ export default function Navbar({ walletAddress }) {
 
         {/* Right side status & wallet */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px', color: '#666', letterSpacing: '0.04em', background: 'rgba(15,15,15,0.04)', padding: '5px 12px', borderRadius: '9999px' }}>
-            <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#16a34a', display: 'inline-block' }} className="animate-live-dot" />
-            <span style={{ fontWeight: 500 }}>Live Network</span>
-          </div>
+
 
           {shortWallet ? (
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>

@@ -16,42 +16,32 @@ export default async function TradePage() {
   if (!token) redirect('/');
 
   return (
-    <div style={{ minHeight: '100dvh', display: 'flex', flexDirection: 'column', background: '#F8F6F1' }}>
+    <div style={{ height: '100dvh', display: 'flex', flexDirection: 'column', background: '#F3F4F6', overflow: 'hidden' }}>
       <Navbar walletAddress={wallet?.value} />
 
-      <main style={{ flex: 1, padding: '48px 32px' }}>
-        <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
-
-          {/* Page heading */}
-          <div className="animate-hero-1" style={{ marginBottom: '36px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: '16px' }}>
-            <div>
-              <p style={{ fontSize: '11px', fontWeight: 600, letterSpacing: '0.22em', color: '#888', textTransform: 'uppercase', marginBottom: '8px' }}>
-                Execution Desk
-              </p>
-              <h1 style={{ fontSize: 'clamp(28px, 4vw, 48px)', fontWeight: 300, letterSpacing: '-0.03em', color: '#0F0F0F', lineHeight: 1.1 }}>
-                Trade.
-              </h1>
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(255,255,255,0.8)', border: '1px solid rgba(15,15,15,0.08)', padding: '6px 14px', borderRadius: '9999px', fontSize: '12px', color: '#444' }}>
-              <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#16a34a' }} className="animate-live-dot" />
-              <span>Sepolia: <strong>Live Oracle Pricing</strong></span>
-            </div>
+      <main style={{ flex: 1, padding: '16px', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
+        {/* Page heading / Top Bar */}
+        <div className="animate-hero-1" style={{ marginBottom: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px', padding: '12px 20px', background: '#FFFFFF', border: '1px solid #E5E7EB', borderRadius: '4px', flexShrink: 0 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+            <h1 style={{ fontSize: '20px', fontWeight: 600, color: '#111827', margin: 0, lineHeight: 1 }}>
+              PaperDEX Trade
+            </h1>
+            <div style={{ height: '20px', width: '1px', background: '#E5E7EB' }} />
+            <p style={{ fontSize: '13px', fontWeight: 500, color: '#6B7280', margin: 0 }}>
+              Execution Desk
+            </p>
           </div>
-
-          {/* Trade desk */}
-          <div className="animate-hero-2">
-            <TradeDesk walletAddress={wallet?.value} />
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px', color: '#374151', fontWeight: 500 }}>
+            <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#10B981' }} className="animate-live-dot" />
+            <span>Sepolia: <strong>Live Oracle Pricing</strong></span>
           </div>
+        </div>
 
+        {/* Trade desk full height area */}
+        <div className="animate-hero-2" style={{ flex: 1, display: 'flex', minHeight: 0 }}>
+          <TradeDesk walletAddress={wallet?.value} />
         </div>
       </main>
-
-      <footer style={{ borderTop: '1px solid rgba(15,15,15,0.08)', flexShrink: 0 }}>
-        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '18px 32px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '11px', color: '#aaa' }}>
-          <span>© 2026 PaperDEX</span>
-          <span>All trades settle on Sepolia Testnet</span>
-        </div>
-      </footer>
     </div>
   );
 }

@@ -195,19 +195,20 @@ export default function TradeDesk({ walletAddress }) {
 
   // ── Shared card style ─────────────────────────────────────────────────────
   const card = {
-    background: 'rgba(255,255,255,0.9)',
-    border: '1px solid rgba(15,15,15,0.09)',
-    borderRadius: '20px',
-    boxShadow: '0 4px 32px rgba(0,0,0,0.04)',
+    background: '#FFFFFF',
+    border: '1px solid #E5E7EB',
+    borderRadius: '4px',
+    display: 'flex',
+    flexDirection: 'column',
+    overflow: 'hidden'
   };
 
   const labelStyle = {
     fontSize: '11px',
     fontWeight: 600,
-    letterSpacing: '0.14em',
     textTransform: 'uppercase',
-    color: '#888',
-    marginBottom: '8px',
+    color: '#6B7280',
+    marginBottom: '6px',
     display: 'block',
   };
 
@@ -220,466 +221,366 @@ export default function TradeDesk({ walletAddress }) {
           to { transform: rotate(360deg); }
         }
         @keyframes tdFadeUp {
-          from { opacity: 0; transform: translateY(12px); }
+          from { opacity: 0; transform: translateY(4px); }
           to   { opacity: 1; transform: translateY(0); }
         }
-        .td-fade { animation: tdFadeUp 0.4s cubic-bezier(0.16,1,0.3,1) both; }
-        .td-token-btn:hover { opacity: 0.85; transform: translateY(-1px); }
-        .td-side-btn:hover  { opacity: 0.85; }
-        .td-input:focus { outline: none; border-color: #0F0F0F !important; box-shadow: 0 0 0 3px rgba(15,15,15,0.06); }
+        .td-fade { animation: tdFadeUp 0.3s ease-out both; }
+        .td-token-btn:hover { opacity: 0.85; background: #F9FAFB !important; }
+        .td-side-btn:hover  { opacity: 0.9; }
+        .td-input:focus { outline: none; border-color: #10B981 !important; box-shadow: 0 0 0 1px #10B981; }
+        .td-btn-primary {
+          background: #10B981;
+          color: white;
+          font-weight: 600;
+          border: none;
+          border-radius: 4px;
+          cursor: pointer;
+          transition: background 0.15s;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        .td-btn-primary:hover:not(:disabled) { background: #059669; }
+        .td-btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
       `}</style>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) minmax(0,360px)', gap: '24px', alignItems: 'start' }}>
+      <div style={{ display: 'flex', width: '100%', height: '100%', gap: '16px', alignItems: 'stretch' }}>
 
-        {/* ── LEFT: Trade Form ─────────────────────────────────────────── */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-
-          {/* Order Ticket */}
-          <div className="td-fade" style={{ ...card, padding: '32px' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '28px' }}>
-              <div>
-                <p style={{ fontSize: '11px', fontWeight: 600, letterSpacing: '0.18em', textTransform: 'uppercase', color: '#888', marginBottom: '4px' }}>
-                  Execution Desk
-                </p>
-                <h2 style={{ fontSize: '22px', fontWeight: 300, letterSpacing: '-0.02em', color: '#0F0F0F' }}>
-                  Place Order
-                </h2>
-              </div>
-              <StatusBadge label="Paper Trading" />
-            </div>
-
-            {/* Token selector */}
-            <div style={{ marginBottom: '24px' }}>
-              <span style={labelStyle}>Select Token</span>
-              <div style={{ display: 'flex', gap: '10px' }}>
-                {TOKENS.map((t) => {
-                  const active = t.symbol === token;
-                  return (
-                    <button
-                      key={t.symbol}
-                      className="td-token-btn"
-                      disabled={step !== STEP.FORM && step !== STEP.ERROR}
-                      onClick={() => { setToken(t.symbol); setError(''); }}
-                      style={{
-                        flex: 1,
-                        padding: '12px 8px',
-                        borderRadius: '12px',
-                        border: active ? `1.5px solid ${t.color}` : '1.5px solid rgba(15,15,15,0.1)',
-                        background: active ? t.bg : 'rgba(255,255,255,0.6)',
-                        cursor: 'pointer',
-                        transition: 'all 0.18s ease',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        gap: '4px',
-                      }}
-                    >
-                      <span style={{ fontSize: '18px', color: active ? t.color : '#888' }}>{t.icon}</span>
-                      <span style={{ fontSize: '12px', fontWeight: 700, color: active ? '#0F0F0F' : '#999', letterSpacing: '0.04em' }}>
-                        {t.symbol}
-                      </span>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* BUY / SELL */}
-            <div style={{ marginBottom: '24px' }}>
-              <span style={labelStyle}>Direction</span>
-              <div style={{ display: 'flex', background: 'rgba(15,15,15,0.04)', borderRadius: '12px', padding: '4px', gap: '4px' }}>
-                {['BUY', 'SELL'].map((s) => {
-                  const active = s === side;
-                  const isGreen = s === 'BUY';
-                  return (
-                    <button
-                      key={s}
-                      className="td-side-btn"
-                      disabled={step !== STEP.FORM && step !== STEP.ERROR}
-                      onClick={() => { setSide(s); setError(''); }}
-                      style={{
-                        flex: 1,
-                        padding: '10px',
-                        borderRadius: '9px',
-                        border: 'none',
-                        cursor: 'pointer',
-                        fontFamily: 'inherit',
-                        fontSize: '13px',
-                        fontWeight: 700,
-                        letterSpacing: '0.06em',
-                        transition: 'all 0.18s ease',
-                        background: active
-                          ? (isGreen ? '#16a34a' : '#dc2626')
-                          : 'transparent',
-                        color: active ? '#fff' : '#999',
-                      }}
-                    >
-                      {s}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Amount */}
-            <div style={{ marginBottom: '28px' }}>
-              <span style={labelStyle}>Amount ({selectedToken?.symbol})</span>
-              <div style={{ position: 'relative' }}>
-                <input
-                  ref={amountRef}
-                  id="trade-amount"
-                  className="td-input"
-                  type="number"
-                  min="0"
-                  step="any"
-                  placeholder="0.00"
-                  value={amount}
-                  disabled={step !== STEP.FORM && step !== STEP.ERROR}
-                  onChange={(e) => { setAmount(e.target.value); setError(''); }}
-                  onKeyDown={(e) => { if (e.key === 'Enter') handleGetQuote(); }}
-                  style={{
-                    width: '100%',
-                    padding: '14px 48px 14px 16px',
-                    fontSize: '20px',
-                    fontFamily: 'monospace',
-                    fontWeight: 300,
-                    color: '#0F0F0F',
-                    background: 'rgba(255,255,255,0.8)',
-                    border: '1.5px solid rgba(15,15,15,0.12)',
-                    borderRadius: '12px',
-                    transition: 'border-color 0.15s, box-shadow 0.15s',
-                  }}
-                />
-                <span style={{
-                  position: 'absolute',
-                  right: '14px',
-                  top: '50%',
-                  transform: 'translateY(-50%)',
-                  fontSize: '12px',
-                  fontWeight: 700,
-                  color: selectedToken?.color,
-                  letterSpacing: '0.04em',
-                }}>
-                  {selectedToken?.symbol}
-                </span>
-              </div>
-              {/* Quick amounts */}
-              <div style={{ display: 'flex', gap: '6px', marginTop: '8px' }}>
-                {['0.001', '0.01', '0.1', '1'].map((v) => (
-                  <button
-                    key={v}
-                    disabled={step !== STEP.FORM && step !== STEP.ERROR}
-                    onClick={() => { setAmount(v); setError(''); }}
-                    style={{
-                      padding: '4px 10px',
-                      borderRadius: '6px',
-                      border: '1px solid rgba(15,15,15,0.1)',
-                      background: amount === v ? 'rgba(15,15,15,0.07)' : 'transparent',
-                      fontSize: '11px',
-                      fontWeight: 600,
-                      color: '#666',
-                      cursor: 'pointer',
-                      fontFamily: 'monospace',
-                      transition: 'all 0.12s',
-                    }}
-                  >
-                    {v}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Error message */}
-            {error && step !== STEP.SUCCESS && (
-              <div style={{
-                marginBottom: '20px',
-                padding: '12px 16px',
-                borderRadius: '10px',
-                background: 'rgba(220,38,38,0.06)',
-                border: '1px solid rgba(220,38,38,0.15)',
-                fontSize: '13px',
-                color: '#b91c1c',
-                lineHeight: 1.5,
-              }}>
-                ⚠ {error}
-              </div>
-            )}
-
-            {/* Action buttons */}
-            {step === STEP.FORM || step === STEP.ERROR ? (
-              <button
-                id="btn-get-quote"
-                className="gs-btn-primary"
-                onClick={handleGetQuote}
-                style={{ width: '100%', padding: '14px', fontSize: '15px' }}
-              >
-                Get Quote →
-              </button>
-            ) : step === STEP.QUOTING ? (
-              <button className="gs-btn-primary" disabled style={{ width: '100%', padding: '14px', fontSize: '15px', gap: '10px' }}>
-                <Spinner size={14} color="#fff" />
-                Fetching Quote…
-              </button>
-            ) : step === STEP.REVIEW ? (
-              <div style={{ display: 'flex', gap: '10px' }}>
-                <button
-                  onClick={reset}
-                  style={{
-                    flex: '0 0 auto',
-                    padding: '14px 20px',
-                    borderRadius: '9999px',
-                    border: '1.5px solid rgba(15,15,15,0.15)',
-                    background: 'transparent',
-                    fontSize: '13px',
-                    color: '#666',
-                    cursor: 'pointer',
-                    fontFamily: 'inherit',
-                    transition: 'all 0.15s',
-                  }}
-                >
-                  ← Edit
-                </button>
-                <button
-                  id="btn-sign-execute"
-                  className="gs-btn-primary"
-                  onClick={handleExecute}
-                  style={{ flex: 1, padding: '14px', fontSize: '15px' }}
-                >
-                  Sign &amp; Execute →
-                </button>
-              </div>
-            ) : step === STEP.SIGNING ? (
-              <button className="gs-btn-primary" disabled style={{ width: '100%', padding: '14px', fontSize: '15px', gap: '10px' }}>
-                <Spinner size={14} color="#fff" />
-                Sign in MetaMask…
-              </button>
-            ) : step === STEP.EXECUTING ? (
-              <button className="gs-btn-primary" disabled style={{ width: '100%', padding: '14px', fontSize: '15px', gap: '10px' }}>
-                <Spinner size={14} color="#fff" />
-                Submitting on-chain…
-              </button>
-            ) : step === STEP.SUCCESS ? (
-              <button
-                id="btn-new-trade"
-                className="gs-btn-primary"
-                onClick={reset}
-                style={{ width: '100%', padding: '14px', fontSize: '15px', background: '#16a34a' }}
-              >
-                New Trade ✓
-              </button>
-            ) : null}
+        {/* ── LEFT: Chart & Activity ─────────────────────────────────────────── */}
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '16px', minWidth: 0 }}>
+          <div style={{ ...card, flex: 1 }}>
+             {/* Chart header */}
+             <div style={{ padding: '12px 16px', borderBottom: '1px solid #E5E7EB', display: 'flex', gap: '24px', alignItems: 'center', background: '#F9FAFB' }}>
+               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                 <span style={{ color: selectedToken?.color, fontSize: '20px' }}>{selectedToken?.icon}</span>
+                 <span style={{ fontSize: '18px', fontWeight: 600, color: '#111827' }}>{selectedToken?.symbol} / USD</span>
+               </div>
+               <div style={{ display: 'flex', flexDirection: 'column' }}>
+                 <span style={{ fontSize: '11px', color: '#6B7280' }}>24h Change</span>
+                 <span style={{ fontSize: '13px', color: '#10B981', fontWeight: 500 }}>+2.45%</span>
+               </div>
+               <div style={{ display: 'flex', flexDirection: 'column' }}>
+                 <span style={{ fontSize: '11px', color: '#6B7280' }}>24h High</span>
+                 <span style={{ fontSize: '13px', color: '#111827', fontWeight: 500 }}>--</span>
+               </div>
+               <div style={{ display: 'flex', flexDirection: 'column' }}>
+                 <span style={{ fontSize: '11px', color: '#6B7280' }}>24h Low</span>
+                 <span style={{ fontSize: '13px', color: '#111827', fontWeight: 500 }}>--</span>
+               </div>
+             </div>
+             {/* Chart body */}
+             <div style={{ flex: 1, background: '#FFFFFF', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
+               {/* Grid lines pattern */}
+               <div style={{ position: 'absolute', inset: 0, opacity: 0.05, backgroundImage: 'linear-gradient(#000 1px, transparent 1px), linear-gradient(90deg, #000 1px, transparent 1px)', backgroundSize: '40px 40px' }} />
+               <span style={{ color: '#9CA3AF', fontSize: '14px', fontWeight: 500, zIndex: 1 }}>Chart Data Unavailable in Paper Mode</span>
+             </div>
           </div>
 
-          {/* How it works */}
-          <div className="td-fade" style={{ ...card, padding: '24px 28px' }}>
-            <p style={{ fontSize: '11px', fontWeight: 600, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#888', marginBottom: '16px' }}>
-              How It Works
-            </p>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-              {[
-                ['01', 'Get Quote', 'Backend fetches live oracle price and creates an EIP-712 signed quote.'],
-                ['02', 'Sign in MetaMask', 'You sign the trade struct with MetaMask — no ETH gas required.'],
-                ['03', 'Relay &amp; Settle', 'Our relayer submits both signatures to PaperDEX on Sepolia for you.'],
-              ].map(([num, title, desc]) => (
-                <div key={num} style={{ display: 'flex', gap: '14px', alignItems: 'flex-start' }}>
-                  <span style={{
-                    width: '28px', height: '28px', borderRadius: '8px',
-                    background: 'rgba(15,15,15,0.05)', display: 'flex',
-                    alignItems: 'center', justifyContent: 'center',
-                    fontSize: '11px', fontWeight: 700, color: '#888', flexShrink: 0,
-                  }}>{num}</span>
-                  <div>
-                    <div style={{ fontSize: '13px', fontWeight: 600, color: '#0F0F0F', marginBottom: '2px' }}>{title}</div>
-                    <div style={{ fontSize: '12px', color: '#888', lineHeight: 1.6 }} dangerouslySetInnerHTML={{ __html: desc }} />
-                  </div>
-                </div>
-              ))}
-            </div>
+          <div style={{ ...card, height: '200px' }}>
+             <div style={{ padding: '10px 16px', borderBottom: '1px solid #E5E7EB', fontSize: '12px', fontWeight: 600, color: '#374151', textTransform: 'uppercase', background: '#F9FAFB' }}>
+               Market Activity
+             </div>
+             <div style={{ padding: '16px', overflowY: 'auto', fontSize: '13px', color: '#6B7280' }}>
+               <table style={{ width: '100%', textAlign: 'left', borderCollapse: 'collapse' }}>
+                 <thead>
+                   <tr>
+                     <th style={{ paddingBottom: '8px', fontWeight: 500, color: '#9CA3AF' }}>Price</th>
+                     <th style={{ paddingBottom: '8px', fontWeight: 500, color: '#9CA3AF' }}>Amount</th>
+                     <th style={{ paddingBottom: '8px', fontWeight: 500, color: '#9CA3AF', textAlign: 'right' }}>Time</th>
+                   </tr>
+                 </thead>
+                 <tbody>
+                   <tr><td colSpan={3} style={{ paddingTop: '16px', textAlign: 'center' }}>No recent trades</td></tr>
+                 </tbody>
+               </table>
+             </div>
           </div>
         </div>
 
-        {/* ── RIGHT: Quote Review / Result ─────────────────────────────── */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+        {/* ── MIDDLE: Order Entry ─────────────────────────────────────────── */}
+        <div style={{ width: '320px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          <div className="td-fade" style={{ ...card, flex: 1 }}>
+            <div style={{ padding: '10px 16px', borderBottom: '1px solid #E5E7EB', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#F9FAFB' }}>
+              <span style={{ fontSize: '12px', fontWeight: 600, color: '#374151', textTransform: 'uppercase' }}>Place Order</span>
+              <StatusBadge label="Paper" color="#059669" bg="#D1FAE5" />
+            </div>
 
-          {/* Quote panel */}
-          {(step === STEP.REVIEW || step === STEP.SIGNING || step === STEP.EXECUTING) && quote && (
-            <div className="td-fade" style={{ ...card, padding: '28px' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-                <p style={{ fontSize: '11px', fontWeight: 600, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#888' }}>
-                  Quote Preview
-                </p>
-                <DeadlineCountdown deadline={quote.deadline} />
-              </div>
-
-              {/* Token + direction header */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '24px', padding: '14px', background: 'rgba(15,15,15,0.03)', borderRadius: '12px' }}>
-                <span style={{
-                  width: '40px', height: '40px', borderRadius: '12px',
-                  background: selectedToken?.bg,
-                  color: selectedToken?.color,
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  fontSize: '20px', fontWeight: 700, flexShrink: 0,
-                }}>
-                  {selectedToken?.icon}
-                </span>
-                <div>
-                  <div style={{ fontSize: '15px', fontWeight: 700, color: '#0F0F0F', letterSpacing: '-0.01em' }}>
-                    {quote.side === 'BUY' ? 'Buy' : 'Sell'} {quote.token}
-                  </div>
-                  <div style={{ fontSize: '12px', color: '#888' }}>{selectedToken?.name}</div>
-                </div>
-                <span style={{
-                  marginLeft: 'auto',
-                  fontSize: '12px', fontWeight: 700,
-                  color: quote.side === 'BUY' ? '#16a34a' : '#dc2626',
-                  background: quote.side === 'BUY' ? 'rgba(22,163,74,0.1)' : 'rgba(220,38,38,0.08)',
-                  padding: '4px 10px', borderRadius: '6px',
-                }}>
-                  {quote.side}
-                </span>
-              </div>
-
-              {/* Quote details */}
-              {[
-                ['Amount',    `${parseFloat(quote.amount).toFixed(6)} ${quote.token}`],
-                ['Price',     fmtPrice(quote.price)],
-                ['Total USD', `$${fmtUsd(quote.usdAmount)}`],
-              ].map(([label, value]) => (
-                <div key={label} style={{
-                  display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-                  padding: '11px 0', borderBottom: '1px solid rgba(15,15,15,0.06)',
-                }}>
-                  <span style={{ fontSize: '12px', color: '#888' }}>{label}</span>
-                  <span style={{ fontSize: '13px', fontWeight: 600, fontFamily: 'monospace', color: '#0F0F0F' }}>{value}</span>
-                </div>
-              ))}
-
-              {/* Nonce */}
-              <div style={{ marginTop: '14px', padding: '10px 12px', background: 'rgba(15,15,15,0.03)', borderRadius: '8px' }}>
-                <div style={{ fontSize: '10px', color: '#aaa', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '3px' }}>
-                  Quote Nonce
-                </div>
-                <div style={{ fontFamily: 'monospace', fontSize: '11px', color: '#666', wordBreak: 'break-all', lineHeight: 1.4 }}>
-                  {quote.nonce}
+            <div style={{ padding: '16px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '20px' }}>
+              {/* Token selector */}
+              <div>
+                <span style={labelStyle}>Market</span>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '8px' }}>
+                  {TOKENS.map((t) => {
+                    const active = t.symbol === token;
+                    return (
+                      <button
+                        key={t.symbol}
+                        className="td-token-btn"
+                        disabled={step !== STEP.FORM && step !== STEP.ERROR}
+                        onClick={() => { setToken(t.symbol); setError(''); }}
+                        style={{
+                          padding: '8px 4px',
+                          borderRadius: '4px',
+                          border: active ? `1px solid ${t.color}` : '1px solid #E5E7EB',
+                          background: active ? '#F9FAFB' : '#FFFFFF',
+                          cursor: 'pointer',
+                          display: 'flex',
+                          flexDirection: 'column',
+                          alignItems: 'center',
+                          gap: '4px',
+                        }}
+                      >
+                        <span style={{ fontSize: '16px', color: active ? t.color : '#9CA3AF' }}>{t.icon}</span>
+                        <span style={{ fontSize: '11px', fontWeight: 600, color: active ? '#111827' : '#6B7280' }}>
+                          {t.symbol}
+                        </span>
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
 
-              {(step === STEP.SIGNING || step === STEP.EXECUTING) && (
-                <div style={{ marginTop: '14px', display: 'flex', alignItems: 'center', gap: '10px', padding: '12px 14px', background: 'rgba(15,15,15,0.03)', borderRadius: '10px' }}>
-                  <Spinner size={14} />
-                  <span style={{ fontSize: '13px', color: '#555' }}>
-                    {step === STEP.SIGNING ? 'Waiting for MetaMask signature…' : 'Broadcasting to Sepolia…'}
-                  </span>
+              {/* BUY / SELL */}
+              <div>
+                <div style={{ display: 'flex', background: '#F3F4F6', borderRadius: '4px', padding: '4px' }}>
+                  {['BUY', 'SELL'].map((s) => {
+                    const active = s === side;
+                    const isGreen = s === 'BUY';
+                    return (
+                      <button
+                        key={s}
+                        className="td-side-btn"
+                        disabled={step !== STEP.FORM && step !== STEP.ERROR}
+                        onClick={() => { setSide(s); setError(''); }}
+                        style={{
+                          flex: 1,
+                          padding: '8px',
+                          borderRadius: '4px',
+                          border: 'none',
+                          cursor: 'pointer',
+                          fontSize: '12px',
+                          fontWeight: 600,
+                          background: active ? (isGreen ? '#10B981' : '#EF4444') : 'transparent',
+                          color: active ? '#FFFFFF' : '#6B7280',
+                        }}
+                      >
+                        {s}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Amount */}
+              <div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
+                  <span style={{ ...labelStyle, marginBottom: 0 }}>Size</span>
+                  <span style={{ fontSize: '11px', color: '#6B7280' }}>{selectedToken?.symbol}</span>
+                </div>
+                <div style={{ position: 'relative' }}>
+                  <input
+                    ref={amountRef}
+                    id="trade-amount"
+                    className="td-input"
+                    type="number"
+                    min="0"
+                    step="any"
+                    placeholder="0.00"
+                    value={amount}
+                    disabled={step !== STEP.FORM && step !== STEP.ERROR}
+                    onChange={(e) => { setAmount(e.target.value); setError(''); }}
+                    onKeyDown={(e) => { if (e.key === 'Enter') handleGetQuote(); }}
+                    style={{
+                      width: '100%',
+                      padding: '10px 12px',
+                      fontSize: '14px',
+                      fontFamily: 'monospace',
+                      color: '#111827',
+                      background: '#FFFFFF',
+                      border: '1px solid #E5E7EB',
+                      borderRadius: '4px',
+                    }}
+                  />
+                </div>
+                {/* Quick amounts */}
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '6px', marginTop: '8px' }}>
+                  {['0.001', '0.01', '0.1', '1'].map((v) => (
+                    <button
+                      key={v}
+                      disabled={step !== STEP.FORM && step !== STEP.ERROR}
+                      onClick={() => { setAmount(v); setError(''); }}
+                      style={{
+                        padding: '4px 0',
+                        borderRadius: '4px',
+                        border: '1px solid #E5E7EB',
+                        background: amount === v ? '#F3F4F6' : '#FFFFFF',
+                        fontSize: '11px',
+                        color: '#4B5563',
+                        cursor: 'pointer',
+                        fontFamily: 'monospace',
+                      }}
+                    >
+                      {v}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Error message */}
+              {error && step !== STEP.SUCCESS && (
+                <div style={{ padding: '10px 12px', borderRadius: '4px', background: '#FEF2F2', border: '1px solid #FCA5A5', fontSize: '12px', color: '#DC2626' }}>
+                  {error}
                 </div>
               )}
-            </div>
-          )}
-
-          {/* Success result */}
-          {step === STEP.SUCCESS && result && (
-            <div className="td-fade" style={{ ...card, padding: '28px' }}>
-              <div style={{ textAlign: 'center', marginBottom: '24px' }}>
-                <div style={{
-                  width: '52px', height: '52px', borderRadius: '50%',
-                  background: 'rgba(22,163,74,0.1)',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  margin: '0 auto 12px',
-                  fontSize: '22px',
-                }}>
-                  ✓
-                </div>
-                <div style={{ fontSize: '17px', fontWeight: 600, color: '#0F0F0F', marginBottom: '4px' }}>Trade Confirmed</div>
-                <div style={{ fontSize: '12px', color: '#888' }}>Your paper trade was settled on Sepolia</div>
-              </div>
-
-              {[
-                ['Block', `#${result.blockNumber}`],
-                ['Status', 'CONFIRMED'],
-              ].map(([label, value]) => (
-                <div key={label} style={{
-                  display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-                  padding: '10px 0', borderBottom: '1px solid rgba(15,15,15,0.06)',
-                }}>
-                  <span style={{ fontSize: '12px', color: '#888' }}>{label}</span>
-                  <span style={{ fontSize: '12px', fontWeight: 600, fontFamily: 'monospace', color: value === 'CONFIRMED' ? '#16a34a' : '#0F0F0F' }}>{value}</span>
-                </div>
-              ))}
-
-              <div style={{ marginTop: '16px' }}>
-                <div style={{ fontSize: '10px', color: '#aaa', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '6px' }}>
-                  Tx Hash
-                </div>
-                <a
-                  id="tx-hash-link"
-                  href={`https://sepolia.etherscan.io/tx/${result.txHash}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{
-                    display: 'block',
-                    fontFamily: 'monospace',
-                    fontSize: '11px',
-                    color: '#627EEA',
-                    wordBreak: 'break-all',
-                    lineHeight: 1.5,
-                    textDecoration: 'none',
-                    padding: '10px 12px',
-                    background: 'rgba(98,126,234,0.06)',
-                    borderRadius: '8px',
-                    border: '1px solid rgba(98,126,234,0.15)',
-                    transition: 'all 0.15s',
-                  }}
-                >
-                  {result.txHash}
-                  <span style={{ display: 'block', fontSize: '10px', color: '#627EEA', marginTop: '4px', fontFamily: 'sans-serif', fontWeight: 600 }}>
-                    View on Etherscan ↗
-                  </span>
-                </a>
+              {/* Action buttons */}
+              <div style={{ marginTop: 'auto', paddingTop: '16px' }}>
+                {step === STEP.FORM || step === STEP.ERROR ? (
+                  <button className="td-btn-primary" onClick={handleGetQuote} style={{ width: '100%', padding: '12px', background: side === 'BUY' ? '#10B981' : '#EF4444' }}>
+                    Get Quote
+                  </button>
+                ) : step === STEP.QUOTING ? (
+                  <button className="td-btn-primary" disabled style={{ width: '100%', padding: '12px', gap: '8px' }}>
+                    <Spinner size={14} color="#fff" /> Fetching…
+                  </button>
+                ) : step === STEP.REVIEW ? (
+                  <div style={{ display: 'flex', gap: '8px' }}>
+                    <button onClick={reset} style={{ padding: '12px 16px', borderRadius: '4px', border: '1px solid #E5E7EB', background: '#FFFFFF', fontSize: '13px', color: '#4B5563', cursor: 'pointer' }}>
+                      Cancel
+                    </button>
+                    <button className="td-btn-primary" onClick={handleExecute} style={{ flex: 1, padding: '12px', background: side === 'BUY' ? '#10B981' : '#EF4444' }}>
+                      Execute {side}
+                    </button>
+                  </div>
+                ) : step === STEP.SIGNING ? (
+                  <button className="td-btn-primary" disabled style={{ width: '100%', padding: '12px', gap: '8px', background: side === 'BUY' ? '#10B981' : '#EF4444' }}>
+                    <Spinner size={14} color="#fff" /> Sign in Wallet…
+                  </button>
+                ) : step === STEP.EXECUTING ? (
+                  <button className="td-btn-primary" disabled style={{ width: '100%', padding: '12px', gap: '8px' }}>
+                    <Spinner size={14} color="#fff" /> Submitting…
+                  </button>
+                ) : step === STEP.SUCCESS ? (
+                  <button className="td-btn-primary" onClick={reset} style={{ width: '100%', padding: '12px' }}>
+                    New Trade
+                  </button>
+                ) : null}
               </div>
             </div>
-          )}
+          </div>
+          
+          {/* Wallet Info Mini Panel */}
+          <div style={{ padding: '10px 16px', background: '#FFFFFF', border: '1px solid #E5E7EB', borderRadius: '4px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+             <span style={{ fontSize: '11px', color: '#6B7280', textTransform: 'uppercase', fontWeight: 600 }}>Wallet</span>
+             <span style={{ fontFamily: 'monospace', fontSize: '12px', color: '#111827' }}>
+               {walletAddress ? `${walletAddress.slice(0, 6)}…${walletAddress.slice(-4)}` : 'Not Connected'}
+             </span>
+          </div>
+        </div>
 
-          {/* Idle state panel */}
-          {(step === STEP.FORM || step === STEP.ERROR) && (
-            <div className="td-fade" style={{
-              ...card,
-              padding: '32px 28px',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              textAlign: 'center',
-              gap: '8px',
-              minHeight: '200px',
-              justifyContent: 'center',
-            }}>
-              <div style={{ fontSize: '32px', marginBottom: '8px', opacity: 0.35 }}>◈</div>
-              <div style={{ fontSize: '14px', fontWeight: 600, color: '#555' }}>Quote will appear here</div>
-              <div style={{ fontSize: '12px', color: '#aaa', lineHeight: 1.6, maxWidth: '220px' }}>
-                Fill in the order form and click <strong>Get Quote</strong> to see live oracle pricing.
-              </div>
-            </div>
-          )}
+        {/* ── RIGHT: Execution / Review Panel ─────────────────────────────── */}
+        <div style={{ width: '320px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          
+          <div className="td-fade" style={{ ...card, flex: 1 }}>
+             <div style={{ padding: '10px 16px', borderBottom: '1px solid #E5E7EB', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#F9FAFB' }}>
+               <span style={{ fontSize: '12px', fontWeight: 600, color: '#374151', textTransform: 'uppercase' }}>Execution</span>
+               {quote && (step === STEP.REVIEW || step === STEP.SIGNING || step === STEP.EXECUTING) && <DeadlineCountdown deadline={quote.deadline} />}
+             </div>
 
-          {/* Wallet info */}
-          <div style={{
-            padding: '14px 16px',
-            background: 'rgba(255,255,255,0.6)',
-            border: '1px solid rgba(15,15,15,0.07)',
-            borderRadius: '12px',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '10px',
-          }}>
-            <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#16a34a', flexShrink: 0 }} className="animate-live-dot" />
-            <div>
-              <div style={{ fontSize: '10px', color: '#aaa', fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase' }}>
-                Signing As
+             <div style={{ padding: '16px', overflowY: 'auto' }}>
+               {/* Idle State */}
+               {(step === STEP.FORM || step === STEP.ERROR) && (
+                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', color: '#9CA3AF', textAlign: 'center', gap: '8px' }}>
+                   <div style={{ fontSize: '24px' }}>⌘</div>
+                   <div style={{ fontSize: '13px' }}>Awaiting Quote</div>
+                 </div>
+               )}
+
+               {/* Quote Review */}
+               {(step === STEP.REVIEW || step === STEP.SIGNING || step === STEP.EXECUTING) && quote && (
+                 <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                   <div style={{ padding: '12px', background: '#F9FAFB', borderRadius: '4px', border: '1px solid #E5E7EB' }}>
+                     <div style={{ fontSize: '12px', color: '#6B7280', marginBottom: '4px' }}>{quote.side === 'BUY' ? 'You Pay' : 'You Receive'} (Est.)</div>
+                     <div style={{ fontSize: '18px', fontWeight: 600, color: '#111827', fontFamily: 'monospace' }}>${fmtUsd(quote.usdAmount)}</div>
+                   </div>
+
+                   <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                     {[
+                       ['Amount', `${parseFloat(quote.amount).toFixed(6)} ${quote.token}`],
+                       ['Price', fmtPrice(quote.price)],
+                     ].map(([label, value]) => (
+                       <div key={label} style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px' }}>
+                         <span style={{ color: '#6B7280' }}>{label}</span>
+                         <span style={{ fontFamily: 'monospace', color: '#111827', fontWeight: 500 }}>{value}</span>
+                       </div>
+                     ))}
+                   </div>
+
+                   <div style={{ height: '1px', background: '#E5E7EB', margin: '4px 0' }} />
+
+                   <div>
+                     <div style={{ fontSize: '10px', color: '#9CA3AF', textTransform: 'uppercase', fontWeight: 600, marginBottom: '4px' }}>Quote Nonce</div>
+                     <div style={{ fontFamily: 'monospace', fontSize: '10px', color: '#6B7280', wordBreak: 'break-all' }}>{quote.nonce}</div>
+                   </div>
+
+                   {(step === STEP.SIGNING || step === STEP.EXECUTING) && (
+                     <div style={{ padding: '10px', background: '#EFF6FF', borderRadius: '4px', border: '1px solid #BFDBFE', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                       <Spinner size={14} color="#2563EB" />
+                       <span style={{ fontSize: '12px', color: '#1E3A8A' }}>
+                         {step === STEP.SIGNING ? 'Please sign in wallet...' : 'Executing on-chain...'}
+                       </span>
+                     </div>
+                   )}
+                 </div>
+               )}
+
+               {/* Success State */}
+               {step === STEP.SUCCESS && result && (
+                 <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                   <div style={{ textAlign: 'center', padding: '24px 0 16px' }}>
+                     <div style={{ width: '48px', height: '48px', borderRadius: '50%', background: '#D1FAE5', color: '#059669', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 12px', fontSize: '24px' }}>✓</div>
+                     <div style={{ fontSize: '16px', fontWeight: 600, color: '#111827' }}>Order Filled</div>
+                   </div>
+
+                   <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                     <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px' }}>
+                       <span style={{ color: '#6B7280' }}>Status</span>
+                       <span style={{ color: '#059669', fontWeight: 600 }}>CONFIRMED</span>
+                     </div>
+                     <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px' }}>
+                       <span style={{ color: '#6B7280' }}>Block</span>
+                       <span style={{ fontFamily: 'monospace', color: '#111827' }}>#{result.blockNumber}</span>
+                     </div>
+                   </div>
+
+                   <div style={{ marginTop: '8px' }}>
+                     <div style={{ fontSize: '10px', color: '#9CA3AF', textTransform: 'uppercase', fontWeight: 600, marginBottom: '4px' }}>Transaction</div>
+                     <a href={`https://sepolia.etherscan.io/tx/${result.txHash}`} target="_blank" rel="noopener noreferrer" style={{ display: 'block', padding: '10px', background: '#F3F4F6', borderRadius: '4px', border: '1px solid #E5E7EB', textDecoration: 'none' }}>
+                       <div style={{ fontFamily: 'monospace', fontSize: '11px', color: '#3B82F6', wordBreak: 'break-all' }}>{result.txHash}</div>
+                       <div style={{ fontSize: '10px', color: '#6B7280', marginTop: '6px' }}>View on Explorer ↗</div>
+                     </a>
+                   </div>
+                 </div>
+               )}
+             </div>
+          </div>
+          
+          {/* How it Works panel */}
+          <div style={{ ...card, padding: '16px', background: '#F9FAFB' }}>
+            <p style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', color: '#6B7280', marginBottom: '12px' }}>How It Works</p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              <div style={{ fontSize: '12px', color: '#4B5563', lineHeight: 1.5 }}>
+                <strong>1.</strong> Enter size and get a live oracle quote.
               </div>
-              <div style={{ fontFamily: 'monospace', fontSize: '12px', color: '#444', fontWeight: 500 }}>
-                {walletAddress ? `${walletAddress.slice(0, 10)}…${walletAddress.slice(-8)}` : '—'}
+              <div style={{ fontSize: '12px', color: '#4B5563', lineHeight: 1.5 }}>
+                <strong>2.</strong> Sign the EIP-712 struct gas-free.
+              </div>
+              <div style={{ fontSize: '12px', color: '#4B5563', lineHeight: 1.5 }}>
+                <strong>3.</strong> Relayer settles trade on Sepolia.
               </div>
             </div>
           </div>
         </div>
+
       </div>
     </>
   );

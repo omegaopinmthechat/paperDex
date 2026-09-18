@@ -9,7 +9,7 @@ PaperDEX is a paper-trading DEX. The Solidity contracts (V1) are already deploye
 
 ## 2. Stack facts — don't re-derive, don't substitute
 - Node.js + Express, plain JavaScript (`.js`), **ESM syntax** — confirmed by `constants/errorCodes.js` and `constants/statusCodes.js`, which both use `export default`. Do not introduce `require`/`module.exports` anywhere in `src/`.
-- Supabase (Postgres) is the **application** database (sessions, quote/trade history, cached market data). It is never the source of truth for token balances — on-chain reads via `ethers.js` are.
+- **Prisma ORM 7.10.0** (`@prisma/client`) is the application database layer. The DB is Postgres; schema defined in `prisma/schema.prisma`. Never import `@supabase/supabase-js` — it has been removed. It is never the source of truth for token balances — on-chain reads via `ethers.js` are.
 - Contract addresses load from `packages/contracts/addresses/sepolia.json`. Never hardcode an address in backend code.
 - EIP-712 for quote and trade signing. Quote-signer key and relayer key are separate, both server-only.
 
@@ -75,7 +75,7 @@ When a session fixes a bug, gets corrected, or finds a pattern not written down 
 
 ## 7. Config / entrypoint files (kept here — low churn, cross-cutting)
 - `config/env.js`: loads/validates all env vars at boot; fail fast on a missing required secret, don't fail mid-request.
-- `config/database.js`: Supabase client config only, no query logic.
+- `infrastructure/database/client.js`: Prisma Client singleton. No query logic here — only instantiation.
 - `config/blockchain.js`: Sepolia RPC + relayer wallet setup config.
 - `config/contracts.js`: loads ABIs/addresses from `packages/contracts/addresses/sepolia.json`.
 - `app.js`: Express app + middleware wiring. `server.js`: listen only.
@@ -90,3 +90,5 @@ When a session fixes a bug, gets corrected, or finds a pattern not written down 
 
 ## 9. External URL rule — strictly enforced
 No URL of any kind — API base URLs, RPC endpoints, third-party service URLs — is ever written inside `src/` code, even if it is public and not a secret. Every external URL must live in `.env` and be loaded through `config/env.js` using `required()`. There are no fallback defaults (`||`) for URLs — if it is missing from `.env` the server must fail at boot, not at request time. The flow is always: `.env` → `config/env.js` (via `required()`) → the one file that uses it. Violating this rule (hardcoding a URL anywhere in `src/`, or adding a `|| 'https://...'` fallback) is treated the same as hardcoding a secret.
+
+2026-09-18 — infrastructure/database/* — Migrated from @supabase/supabase-js to Prisma 7.10.0. Schema in prisma/schema.prisma. All repositories rewritten to use Prisma Client. DATABASE_URL replaces SUPABASE_URL + SUPABASE_SERVICE_ROLE_KEY in .env. Repositories return snake_case shaped objects to keep service-layer callers unchanged.

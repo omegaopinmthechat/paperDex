@@ -6,14 +6,19 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon src/server.js"
+    "dev": "nodemon src/server.js",
+    "db:generate": "prisma generate",
+    "db:migrate": "prisma migrate dev",
+    "db:push": "prisma db push",
+    "db:studio": "prisma studio"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "packageManager": "pnpm@10.33.3",
   "dependencies": {
-    "@supabase/supabase-js": "^2.112.3",
+    "@prisma/adapter-pg": "^7.10.0",
+    "@prisma/client": "7.10.0",
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
     "ethers": "^6.17.0",
@@ -21,10 +26,12 @@
     "express-rate-limit": "^8.6.2",
     "helmet": "^8.3.0",
     "jsonwebtoken": "^9.0.3",
+    "pg": "^8.23.0",
     "zod": "^4.4.3"
   },
   "devDependencies": {
     "eslint": "^10.8.1",
-    "nodemon": "^3.1.14"
+    "nodemon": "^3.1.14",
+    "prisma": "7.10.0"
   }
 }

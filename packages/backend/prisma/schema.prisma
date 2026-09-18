@@ -1,0 +1,79 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id            String        @id @default(uuid())
+  walletAddress String        @unique @map("wallet_address")
+  createdAt     DateTime      @default(now()) @map("created_at")
+  updatedAt     DateTime      @updatedAt @map("updated_at")
+  authNonce     AuthNonce?
+  quotes        Quote[]
+  trades        Trade[]
+  transactions  Transaction[]
+
+  @@map("users")
+}
+
+model AuthNonce {
+  walletAddress String   @id @map("wallet_address")
+  nonce         String
+  expiresAt     DateTime @map("expires_at")
+  used          Boolean  @default(false)
+  user          User     @relation(fields: [walletAddress], references: [walletAddress])
+
+  @@map("auth_nonces")
+}
+
+model Quote {
+  id             String   @id @default(uuid())
+  userId         String   @map("user_id")
+  token          String
+  side           String
+  amount         String
+  price          Float
+  nonce          String
+  deadline       String
+  quoteSignature String   @map("quote_signature")
+  createdAt      DateTime @default(now()) @map("created_at")
+  user           User     @relation(fields: [userId], references: [id])
+
+  @@map("quotes")
+}
+
+model Trade {
+  id        String   @id @default(uuid())
+  userId    String   @map("user_id")
+  token     String
+  side      String
+  amount    String
+  price     Float
+  usdAmount String   @map("usd_amount")
+  nonce     String
+  txHash    String?  @map("tx_hash")
+  status    String
+  createdAt DateTime @default(now()) @map("created_at")
+  user      User     @relation(fields: [userId], references: [id])
+
+  @@map("trades")
+}
+
+model Transaction {
+  id          String   @id @default(uuid())
+  userId      String   @map("user_id")
+  txHash      String   @map("tx_hash")
+  type        String
+  token       String
+  direction   String
+  amount      String
+  status      String
+  blockNumber Int?     @map("block_number")
+  createdAt   DateTime @default(now()) @map("created_at")
+  user        User     @relation(fields: [userId], references: [id])
+
+  @@map("transactions")
+}

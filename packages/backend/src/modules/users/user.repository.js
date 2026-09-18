@@ -1,11 +1,15 @@
-import supabase from '../../infrastructure/database/client.js';
+import prisma from '../../infrastructure/database/client.js';
 
 export const findByWalletAddress = async (walletAddress) => {
-  const { data, error } = await supabase
-    .from('users')
-    .select('id, wallet_address, created_at')
-    .eq('wallet_address', walletAddress)
-    .maybeSingle();
-  if (error) throw error;
-  return data;
+  const user = await prisma.user.findUnique({
+    where: { walletAddress },
+    select: { id: true, walletAddress: true, createdAt: true },
+  });
+  if (!user) return null;
+  // Return shape that matches what user.service.js expects (snake_case keys)
+  return {
+    id: user.id,
+    wallet_address: user.walletAddress,
+    created_at: user.createdAt,
+  };
 };

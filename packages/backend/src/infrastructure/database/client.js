@@ -1,14 +1,23 @@
-import { createClient } from '@supabase/supabase-js';
-import env from '../../config/env.js';
+import { PrismaClient } from '@prisma/client';
+import { PrismaPg } from '@prisma/adapter-pg';
+import pg from 'pg';
+import env from '../../config/env.js'; // Ensure env vars are loaded
 
-const supabase = createClient(
-  env.SUPABASE_URL,
-  env.SUPABASE_SERVICE_ROLE_KEY,
-  {
-    db: {
-      schema: 'paperdex',
-    },
-  }
-);
+const { Pool } = pg;
 
-export default supabase;
+// Singleton: reuse the same PrismaClient across hot-reloads (nodemon)
+const globalForPrisma = globalThis;
+
+if (!globalForPrisma.prisma) {
+  const connectionString = env.DATABASE_URL;
+  const pool = new Pool({ connectionString });
+  const adapter = new PrismaPg(pool);
+
+  globalForPrisma.prisma = new PrismaClient({
+    adapter,
+    log: env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
+  });
+}
+
+const prisma = globalForPrisma.prisma;
+export default prisma;
