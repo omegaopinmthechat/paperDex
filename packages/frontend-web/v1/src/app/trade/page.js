@@ -16,7 +16,7 @@ export default async function TradePage() {
   if (!token) redirect('/');
 
   return (
-    <div style={{ height: '100dvh', display: 'flex', flexDirection: 'column', background: '#F3F4F6', overflow: 'hidden' }}>
+    <div style={{ height: '100dvh', display: 'flex', flexDirection: 'column', background: '#F8F6F1', overflow: 'hidden' }}>
       <Navbar walletAddress={wallet?.value} />
 
       <main style={{ flex: 1, padding: '16px', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
