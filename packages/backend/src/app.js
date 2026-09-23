@@ -13,7 +13,10 @@ app.use(express.json());
 
 app.use('/api/v1', router);
 
-app.get('/', (_req, res) => res.json({ status: 'ok' }));
+// app.get('/', (_req, res) => res.json({ status: 'ok' }));
+app.get('/', (req, res) => {
+    res.send("Hi there");
+})
 
 app.use(errorMiddleware);
 

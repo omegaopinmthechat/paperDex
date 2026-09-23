@@ -16,7 +16,8 @@ export const getQuote = async (req, res) => {
     sendSuccess(res, data);
   } catch (err) {
     if (err instanceof AppError) return sendError(res, err.statusCode, err.code, err.message);
-    sendError(res, STATUS_CODES.INTERNAL_SERVER_ERROR, ERROR_CODES.QUOTE_FAILED, 'Quote generation failed');
+    console.error('[Unhandled Error in trading.controller.js]', err);
+    sendError(res, STATUS_CODES.INTERNAL_SERVER_ERROR, ERROR_CODES.QUOTE_FAILED, 'Quote generation/Trade execution failed');
   }
 };
 
@@ -32,6 +33,7 @@ export const executeTrade = async (req, res) => {
     sendSuccess(res, data);
   } catch (err) {
     if (err instanceof AppError) return sendError(res, err.statusCode, err.code, err.message);
+    console.error('[Unhandled Error in trading.controller.js executeTrade]', err);
     sendError(res, STATUS_CODES.INTERNAL_SERVER_ERROR, ERROR_CODES.TRADE_FAILED, 'Trade execution failed');
   }
 };

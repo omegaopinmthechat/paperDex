@@ -8,6 +8,7 @@ const errorMiddleware = (err, req, res, next) => {
   if (err instanceof AppError) {
     return sendError(res, err.statusCode, err.code, err.message);
   }
+  console.error('[Unhandled Error]', err);
   sendError(
     res,
     STATUS_CODES.INTERNAL_SERVER_ERROR,
