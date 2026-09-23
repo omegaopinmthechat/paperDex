@@ -12,6 +12,7 @@ export const requestNonce = async (walletAddress) => {
   const address = ethers.getAddress(walletAddress); // normalise + validate checksum
   const nonce = generateNonce();
   const expiresAt = nonceExpiresAt();
+  await repo.upsertUser(address);           // ensure user row exists before FK-constrained nonce insert
   await repo.upsertNonce(address, nonce, expiresAt);
   return { nonce, message: buildNonceMessage(address, nonce) };
 };
