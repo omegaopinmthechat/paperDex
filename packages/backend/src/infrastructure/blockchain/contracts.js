@@ -4,8 +4,8 @@ import provider from './provider.js';
 import { relayerWallet } from './wallet.js';
 
 const require = createRequire(import.meta.url);
-const sepoliaAddresses = require('../../../../contracts/deployments/sepolia.json');
-const paperUsdArtifact = require('../../../../contracts/artifacts/contracts/tokens/PaperUSD.sol/PaperUSD.json');
+const sepoliaAddresses = require('../../contracts/deployments/sepolia.json');
+const paperUsdArtifact = require('../../contracts/abis/PaperUSD.json');
 
 export const paperUsdContract = new ethers.Contract(
   sepoliaAddresses.contracts.USDTP,

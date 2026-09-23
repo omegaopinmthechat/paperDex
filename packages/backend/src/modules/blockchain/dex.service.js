@@ -6,8 +6,8 @@ import { sendAndWait } from './relayer.service.js';
 import { parseContractError } from './blockchain.service.js';
 
 const require = createRequire(import.meta.url);
-const sepolia = require('../../../../contracts/deployments/sepolia.json');
-const paperDexArtifact = require('../../../../contracts/artifacts/contracts/exchange/PaperDEX.sol/PaperDEX.json');
+const sepolia = require('../../contracts/deployments/sepolia.json');
+const paperDexArtifact = require('../../contracts/abis/PaperDEX.json');
 
 const paperDexContract = new ethers.Contract(
   sepolia.contracts.PaperDEX,

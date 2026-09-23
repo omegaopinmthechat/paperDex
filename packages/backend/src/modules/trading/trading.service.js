@@ -9,7 +9,7 @@ import STATUS_CODES from '../../constants/statusCodes.js';
 import ERROR_CODES from '../../constants/errorCodes.js';
 
 const require = createRequire(import.meta.url);
-const sepolia = require('../../../../contracts/deployments/sepolia.json');
+const sepolia = require('../../contracts/deployments/sepolia.json');
 
 // ── EIP-712 constants (mirrors quote.service.js — kept local for verification) ──
 

@@ -3,7 +3,7 @@ import { createRequire } from 'module';
 import provider from '../../infrastructure/blockchain/provider.js';
 
 const require = createRequire(import.meta.url);
-const sepolia = require('../../../../contracts/deployments/sepolia.json');
+const sepolia = require('../../contracts/deployments/sepolia.json');
 
 // Minimal ERC-20 ABI — only balanceOf and decimals are needed here
 const ERC20_ABI = [

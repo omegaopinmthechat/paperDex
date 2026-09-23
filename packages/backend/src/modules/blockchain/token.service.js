@@ -5,8 +5,8 @@ import provider from '../../infrastructure/blockchain/provider.js';
 import { sendAndWait } from './relayer.service.js';
 
 const require = createRequire(import.meta.url);
-const sepolia = require('../../../../contracts/deployments/sepolia.json');
-const paperTokenArtifact = require('../../../../contracts/artifacts/contracts/tokens/PaperTokens.sol/PaperToken.json');
+const sepolia = require('../../contracts/deployments/sepolia.json');
+const paperTokenArtifact = require('../../contracts/abis/PaperToken.json');
 
 const BALANCE_OF_ABI = ['function balanceOf(address) view returns (uint256)'];
 
