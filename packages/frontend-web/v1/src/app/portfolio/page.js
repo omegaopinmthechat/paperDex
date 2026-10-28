@@ -53,8 +53,8 @@ export default async function PortfolioPage() {
           {initialData.length === 0 ? (
             <div style={{ textAlign: 'center', padding: '80px 20px', color: '#888', fontSize: '14px' }}>
               <p style={{ marginBottom: '8px', fontSize: '24px' }}>⏳</p>
-              <p>Your starter balance is being granted on-chain. This usually takes ~15 seconds after first login.</p>
-              <p style={{ marginTop: '8px', fontSize: '12px', color: '#aaa' }}>Refresh the page in a moment.</p>
+              <p>If you just created your account, it might take up to a few minutes to confirm on the Sepolia blockchain and register your joining $100,000 USDTP.</p>
+              <p style={{ marginTop: '8px', fontSize: '12px', color: '#aaa' }}>Balances update automatically once confirmed.</p>
             </div>
           ) : (
             <PortfolioHoldings initialData={initialData} />

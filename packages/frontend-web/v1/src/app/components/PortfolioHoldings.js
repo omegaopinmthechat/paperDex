@@ -39,12 +39,16 @@ export default function PortfolioHoldings({ initialData }) {
     }
   }, []);
 
-  useEffect(() => {
-    const id = setInterval(refresh, 30_000);
-    return () => clearInterval(id);
-  }, [refresh]);
-
   const totalUsd = holdings.reduce((sum, h) => sum + (parseFloat(h.usdValue) || 0), 0);
+  const usdtpHolding = holdings.find((h) => h.symbol === 'USDTP');
+  const hasZeroBalance = totalUsd === 0 && (!usdtpHolding || parseFloat(usdtpHolding.balance) === 0);
+
+  useEffect(() => {
+    // If balance is 0 (new account awaiting on-chain starter balance), poll every 6s, otherwise every 30s
+    const pollInterval = hasZeroBalance ? 6_000 : 30_000;
+    const id = setInterval(refresh, pollInterval);
+    return () => clearInterval(id);
+  }, [refresh, hasZeroBalance]);
 
   return (
     <div>
@@ -54,7 +58,7 @@ export default function PortfolioHoldings({ initialData }) {
         border: '1px solid rgba(15,15,15,0.08)',
         borderRadius: '20px',
         padding: '28px 32px',
-        marginBottom: '24px',
+        marginBottom: '20px',
         boxShadow: '0 4px 20px rgba(0,0,0,0.02)',
         display: 'flex',
         justifyContent: 'space-between',
@@ -96,6 +100,87 @@ export default function PortfolioHoldings({ initialData }) {
           </button>
         </div>
       </div>
+
+      {/* New account onboarding notice banner */}
+      {hasZeroBalance ? (
+        <div className="animate-hero-2" style={{
+          background: 'linear-gradient(135deg, rgba(245, 158, 11, 0.08) 0%, rgba(251, 191, 36, 0.04) 100%)',
+          border: '1px solid rgba(245, 158, 11, 0.25)',
+          borderRadius: '16px',
+          padding: '16px 22px',
+          marginBottom: '24px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          gap: '16px',
+          flexWrap: 'wrap',
+          boxShadow: '0 2px 10px rgba(245, 158, 11, 0.04)',
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+            <div style={{
+              width: '38px',
+              height: '38px',
+              borderRadius: '10px',
+              background: 'rgba(245, 158, 11, 0.15)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: '18px',
+              flexShrink: 0,
+            }}>
+              ⏳
+            </div>
+            <div>
+              <div style={{ fontSize: '13px', fontWeight: 600, color: '#92400E', marginBottom: '3px' }}>
+                Joining $100,000 USDTP Starter Balance Registering
+              </div>
+              <div style={{ fontSize: '12px', color: '#B45309', lineHeight: 1.5 }}>
+                If you just created your account, it might take up to a few minutes to confirm on the Sepolia blockchain and register your joining $100,000 dollars. This page will update automatically once confirmed.
+              </div>
+            </div>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '6px',
+              fontSize: '11px',
+              fontWeight: 600,
+              color: '#B45309',
+              background: 'rgba(245, 158, 11, 0.12)',
+              padding: '5px 12px',
+              borderRadius: '9999px',
+            }}>
+              <span style={{
+                width: '7px',
+                height: '7px',
+                borderRadius: '50%',
+                background: '#F59E0B',
+                boxShadow: '0 0 0 2px rgba(245,158,11,0.25)',
+              }} />
+              Syncing Sepolia Block...
+            </span>
+          </div>
+        </div>
+      ) : (
+        <div style={{
+          background: 'rgba(255, 255, 255, 0.75)',
+          border: '1px solid rgba(15, 15, 15, 0.06)',
+          borderRadius: '14px',
+          padding: '12px 18px',
+          marginBottom: '24px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '12px',
+          fontSize: '12px',
+          color: '#666',
+        }}>
+          <span style={{ fontSize: '15px' }}>ℹ️</span>
+          <span>
+            <strong>New Account Note:</strong> If you recently registered, please note that it can take up to a few minutes for the Sepolia blockchain to confirm and reflect your joining <strong>$100,000 USDTP</strong> starter capital.
+          </span>
+        </div>
+      )}
 
       {/* Holdings Grid */}
       <div className="animate-hero-3" style={{

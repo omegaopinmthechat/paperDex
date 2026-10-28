@@ -164,10 +164,23 @@ export default async function Dashboard() {
                 <p style={{ fontSize: '13px', color: '#666', lineHeight: 1.6 }}>
                   On-chain token balances across USDTP, BTCP, ETHP and SOLP.
                 </p>
-                {totalUsd > 0 && (
+                {totalUsd > 0 ? (
                   <div style={{ marginTop: '12px', fontFamily: 'monospace', fontSize: '18px', fontWeight: 300, color: '#0F0F0F' }}>
                     ${totalUsd.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                     <span style={{ fontSize: '11px', color: '#888', marginLeft: '6px', fontFamily: 'sans-serif' }}>total</span>
+                  </div>
+                ) : (
+                  <div style={{
+                    marginTop: '10px',
+                    fontSize: '11px',
+                    color: '#92400E',
+                    background: 'rgba(245, 158, 11, 0.08)',
+                    border: '1px solid rgba(245, 158, 11, 0.2)',
+                    padding: '8px 10px',
+                    borderRadius: '8px',
+                    lineHeight: 1.4,
+                  }}>
+                    ⏳ <strong>New account?</strong> Joining $100k USDTP may take up to a few minutes to confirm on Sepolia.
                   </div>
                 )}
                 {usdtp && parseFloat(usdtp.balance) > 0 && (
