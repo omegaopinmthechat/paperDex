@@ -98,14 +98,19 @@ export const executeApiTrade = async (userId, walletAddress, { token, side, amou
     }
 
     // 3a. Move USDTP from user to Vault
-    await sendAndWait(
-      usdtpContract.exchangeTransferFrom(walletAddress, VAULT_ADDRESS, usdAmountWei),
-    );
+    try {
+      await sendAndWait(
+        usdtpContract.exchangeTransferFrom(walletAddress, VAULT_ADDRESS, usdAmountWei),
+      );
 
-    // 3b. Send asset token from Vault to user
-    txResult = await sendAndWait(
-      vaultContract.sendToken(tokenAddress, walletAddress, amountWei),
-    );
+      // 3b. Send asset token from Vault to user
+      txResult = await sendAndWait(
+        vaultContract.sendToken(tokenAddress, walletAddress, amountWei),
+      );
+    } catch (err) {
+      const errorMsg = err?.reason || err?.shortMessage || err?.message || 'On-chain transaction execution failed';
+      throw new AppError(STATUS_CODES.BAD_REQUEST, ERROR_CODES.TRADE_FAILED, `On-chain execution failed: ${errorMsg}`);
+    }
   } else if (side === 'SELL') {
     // 2a. Pre-flight balance check: User must have enough of the asset token
     const userTokenBalance = await tokenContract.balanceOf(walletAddress);
@@ -128,14 +133,19 @@ export const executeApiTrade = async (userId, walletAddress, { token, side, amou
     }
 
     // 3a. Move asset token from user to Vault
-    await sendAndWait(
-      tokenContract.exchangeTransferFrom(walletAddress, VAULT_ADDRESS, amountWei),
-    );
+    try {
+      await sendAndWait(
+        tokenContract.exchangeTransferFrom(walletAddress, VAULT_ADDRESS, amountWei),
+      );
 
-    // 3b. Send USDTP from Vault to user
-    txResult = await sendAndWait(
-      vaultContract.sendToken(TOKEN_ADDRESSES.USDTP, walletAddress, usdAmountWei),
-    );
+      // 3b. Send USDTP from Vault to user
+      txResult = await sendAndWait(
+        vaultContract.sendToken(TOKEN_ADDRESSES.USDTP, walletAddress, usdAmountWei),
+      );
+    } catch (err) {
+      const errorMsg = err?.reason || err?.shortMessage || err?.message || 'On-chain transaction execution failed';
+      throw new AppError(STATUS_CODES.BAD_REQUEST, ERROR_CODES.TRADE_FAILED, `On-chain execution failed: ${errorMsg}`);
+    }
   } else {
     throw new AppError(STATUS_CODES.BAD_REQUEST, ERROR_CODES.INVALID_TRADE, 'Invalid trade side. Must be BUY or SELL.');
   }

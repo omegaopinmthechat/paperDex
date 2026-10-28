@@ -19,6 +19,8 @@ const ENDPOINTS_DATA = [
     snippets: {
       curl: `curl -X GET "${BASE_URL}/api/v2/markets" \\
   -H "Authorization: pdx_id_<YOUR_KEY_ID>:<YOUR_SECRET>"`,
+      powershell: `curl.exe -X GET "${BASE_URL}/api/v2/markets" \`
+  -H "Authorization: pdx_id_<YOUR_KEY_ID>:<YOUR_SECRET>"`,
       python: `import requests
 
 url = "${BASE_URL}/api/v2/markets"
@@ -89,6 +91,8 @@ console.log(data);`,
     snippets: {
       curl: `curl -X GET "${BASE_URL}/api/v2/markets/BTCP" \\
   -H "Authorization: pdx_id_<YOUR_KEY_ID>:<YOUR_SECRET>"`,
+      powershell: `curl.exe -X GET "${BASE_URL}/api/v2/markets/BTCP" \`
+  -H "Authorization: pdx_id_<YOUR_KEY_ID>:<YOUR_SECRET>"`,
       python: `import requests
 
 url = "${BASE_URL}/api/v2/markets/BTCP"
@@ -130,6 +134,8 @@ console.log(data);`,
     parameters: [],
     snippets: {
       curl: `curl -X GET "${BASE_URL}/api/v2/portfolio" \\
+  -H "Authorization: pdx_id_<YOUR_KEY_ID>:<YOUR_SECRET>"`,
+      powershell: `curl.exe -X GET "${BASE_URL}/api/v2/portfolio" \`
   -H "Authorization: pdx_id_<YOUR_KEY_ID>:<YOUR_SECRET>"`,
       python: `import requests
 
@@ -201,6 +207,10 @@ console.log(data);`,
   -H "Authorization: pdx_id_<YOUR_KEY_ID>:<YOUR_SECRET>" \\
   -H "Content-Type: application/json" \\
   -d '{"token": "BTCP", "side": "BUY", "amount": "0.1"}'`,
+      powershell: `curl.exe -X POST "${BASE_URL}/api/v2/trade" \`
+  -H "Authorization: pdx_id_<YOUR_KEY_ID>:<YOUR_SECRET>" \`
+  -H "Content-Type: application/json" \`
+  -d '{\\"token\\":\\"BTCP\\",\\"side\\":\\"BUY\\",\\"amount\\":\\"0.1\\"}'`,
       python: `import requests
 
 url = "${BASE_URL}/api/v2/trade"
@@ -599,6 +609,7 @@ export default function ApiDocsFull({ walletAddress }) {
                     <div style={{ display: 'flex', gap: '4px' }}>
                       {[
                         { key: 'curl', label: 'cURL' },
+                        { key: 'powershell', label: 'PowerShell' },
                         { key: 'python', label: 'Python' },
                         { key: 'javascript', label: 'JavaScript' },
                       ].map((tab) => (

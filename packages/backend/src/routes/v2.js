@@ -91,7 +91,8 @@ router.post('/trade', tradeLimiter, requireScope('TRADE'), validate(tradeOrderSc
   } catch (err) {
     if (err instanceof AppError) return sendError(res, err.statusCode, err.code, err.message);
     console.error('[v2 POST /trade]', err);
-    sendError(res, STATUS_CODES.INTERNAL_SERVER_ERROR, ERROR_CODES.TRADE_FAILED, err.message || 'Trade execution failed');
+    const msg = err?.reason || err?.shortMessage || err?.message || 'Trade execution failed';
+    sendError(res, STATUS_CODES.BAD_REQUEST, ERROR_CODES.TRADE_FAILED, msg);
   }
 });
 
