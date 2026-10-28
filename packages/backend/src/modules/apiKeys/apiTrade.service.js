@@ -6,8 +6,10 @@ import { insertTransaction } from '../blockchain/blockchain.repository.js';
 import { relayerWallet } from '../../infrastructure/blockchain/wallet.js';
 import { sendAndWait } from '../blockchain/relayer.service.js';
 import { AppError } from '../../utils/errors.js';
+import { hasReceivedStartingBalance } from '../blockchain/token.service.js';
 import STATUS_CODES from '../../constants/statusCodes.js';
 import ERROR_CODES from '../../constants/errorCodes.js';
+
 
 const require = createRequire(import.meta.url);
 const sepolia = require('../../contracts/deployments/sepolia.json');
@@ -69,12 +71,21 @@ export const executeApiTrade = async (userId, walletAddress, { token, side, amou
     // 2a. Pre-flight balance check: User must have enough USDTP
     const userUsdtBalance = await usdtpContract.balanceOf(walletAddress);
     if (userUsdtBalance < usdAmountWei) {
+      const alreadyGranted = await hasReceivedStartingBalance(walletAddress);
+      if (!alreadyGranted) {
+        throw new AppError(
+          STATUS_CODES.BAD_REQUEST,
+          ERROR_CODES.INSUFFICIENT_BALANCE,
+          'Your initial 100,000 USDTP starter balance is still confirming on the Sepolia blockchain (~15s). Please retry in a few seconds once confirmed.',
+        );
+      }
       throw new AppError(
         STATUS_CODES.BAD_REQUEST,
         ERROR_CODES.INSUFFICIENT_BALANCE,
         `Insufficient USDTP balance. Required: ${ethers.formatUnits(usdAmountWei, 18)} USDTP, available: ${ethers.formatUnits(userUsdtBalance, 18)} USDTP.`,
       );
     }
+
 
     // 2b. Vault liquidity check: Vault must have enough of the asset token
     const vaultTokenBalance = await tokenContract.balanceOf(VAULT_ADDRESS);
