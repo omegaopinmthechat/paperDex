@@ -21,6 +21,8 @@ const env = {
   COINGECKO_URL: required('COINGECKO_URL'),
   SEPOLIA_RPC_URL: required('SEPOLIA_RPC_URL'),
   RELAYER_PRIVATE_KEY: required('RELAYER_PRIVATE_KEY'),
+  // Set RATE_LIMIT_ENABLED=false in .env to turn off all API rate limiting instantly
+  RATE_LIMIT_ENABLED: process.env.RATE_LIMIT_ENABLED !== 'false',
 };
 
 export default env;

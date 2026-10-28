@@ -15,8 +15,24 @@ model User {
   quotes        Quote[]
   trades        Trade[]
   transactions  Transaction[]
+  apiKeys       ApiKey[]
 
   @@map("users")
+}
+
+model ApiKey {
+  id          String    @id                        // "pdx_id_<16hex>"
+  userId      String    @map("user_id")
+  keyHash     String    @unique @map("key_hash")   // SHA-256 hash of the raw secret; raw secret never stored
+  name        String                               // user-chosen label, e.g. "my trading bot"
+  scope       String                               // "READ_ONLY" | "TRADE"
+  expiresAt   DateTime? @map("expires_at")         // null = never expires
+  lastUsedAt  DateTime? @map("last_used_at")
+  revokedAt   DateTime? @map("revoked_at")         // null = active; non-null = revoked
+  createdAt   DateTime  @default(now()) @map("created_at")
+  user        User      @relation(fields: [userId], references: [id])
+
+  @@map("api_keys")
 }
 
 model AuthNonce {

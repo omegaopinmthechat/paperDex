@@ -16,9 +16,10 @@ export default function Navbar({ walletAddress }) {
     { href: '/markets', label: 'Markets' },
     { href: '/portfolio', label: 'Portfolio' },
     { href: '/trade', label: 'Trade' },
-    { href: '/api', label: 'Api' },
-    { href: '/pricing', label: 'Pricing' },
+    { href: '/api', label: 'API Keys' },
+    { href: '/docs', label: 'API Docs' },
   ];
+
 
   return (
     <header style={{ borderBottom: '1px solid rgba(15,15,15,0.08)', background: 'rgba(248, 246, 241, 0.85)', backdropFilter: 'blur(8px)', position: 'sticky', top: 0, zIndex: 40, flexShrink: 0 }}>
