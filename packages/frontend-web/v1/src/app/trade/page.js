@@ -31,8 +31,7 @@ export default async function TradePage() {
               Execution Desk
             </p>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px', color: '#374151', fontWeight: 500 }}>
-            <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#10B981' }} className="animate-live-dot" />
+          <div style={{ display: 'flex', alignItems: 'center', fontSize: '12px', color: '#374151', fontWeight: 500 }}>
             <span>Sepolia: <strong>Live Oracle Pricing</strong></span>
           </div>
         </div>

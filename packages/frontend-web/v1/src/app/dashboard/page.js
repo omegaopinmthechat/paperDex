@@ -58,8 +58,7 @@ export default async function Dashboard() {
                 Account Terminal.
               </h1>
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(255,255,255,0.8)', border: '1px solid rgba(15,15,15,0.08)', padding: '6px 14px', borderRadius: '9999px', fontSize: '12px', color: '#444' }}>
-              <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#16a34a' }} className="animate-live-dot" />
+            <div style={{ display: 'flex', alignItems: 'center', background: 'rgba(255,255,255,0.8)', border: '1px solid rgba(15,15,15,0.08)', padding: '6px 14px', borderRadius: '9999px', fontSize: '12px', color: '#444' }}>
               <span>Oracle Feed: <strong>Connected</strong></span>
             </div>
           </div>

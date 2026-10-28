@@ -38,8 +38,7 @@ export default async function Home() {
             </Link>
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '11px', color: '#666', letterSpacing: '0.08em' }}>
-            <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#16a34a', display: 'inline-block' }} className="animate-live-dot" />
+          <div style={{ display: 'flex', alignItems: 'center', fontSize: '11px', color: '#666', letterSpacing: '0.08em' }}>
             Live Network
           </div>
         </div>

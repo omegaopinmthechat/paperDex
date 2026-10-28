@@ -66,8 +66,7 @@ export default function Navbar({ walletAddress }) {
 
           {shortWallet ? (
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '5px 12px', borderRadius: '9999px', border: '1px solid rgba(15,15,15,0.12)', background: 'rgba(255,255,255,0.8)' }}>
-                <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#0F0F0F', display: 'inline-block' }} />
+              <div style={{ display: 'flex', alignItems: 'center', padding: '5px 14px', borderRadius: '9999px', border: '1px solid rgba(15,15,15,0.12)', background: 'rgba(255,255,255,0.8)' }}>
                 <span style={{ fontSize: '12px', color: '#222', fontFamily: 'monospace', fontWeight: 500 }}>{shortWallet}</span>
               </div>
               <form action={logout}>
