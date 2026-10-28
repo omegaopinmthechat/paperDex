@@ -3,13 +3,16 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { logout } from '../actions/auth';
+import { useTerminal } from './terminal/TerminalContext';
 
 export default function Navbar({ walletAddress }) {
   const pathname = usePathname();
+  const { isOpen, setIsOpen } = useTerminal();
 
   const shortWallet = walletAddress
     ? `${walletAddress.slice(0, 6)}...${walletAddress.slice(-4)}`
     : null;
+
 
   const navLinks = [
     { href: '/dashboard', label: 'Dashboard' },
@@ -62,10 +65,35 @@ export default function Navbar({ walletAddress }) {
         </div>
 
         {/* Right side status & wallet */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
 
+          {/* CLI Terminal Toggle Button */}
+          <button
+            type="button"
+            onClick={() => setIsOpen((prev) => !prev)}
+            title="Toggle CLI Terminal (Ctrl + `)"
+            style={{
+              background: isOpen ? '#0F0F0F' : 'rgba(15, 15, 15, 0.05)',
+              color: isOpen ? '#4EC9B0' : '#444',
+              border: isOpen ? '1px solid #0F0F0F' : '1px solid rgba(15, 15, 15, 0.12)',
+              padding: '5px 12px',
+              borderRadius: '9999px',
+              fontSize: '12px',
+              fontWeight: 600,
+              fontFamily: 'monospace',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              transition: 'all 0.15s ease',
+            }}
+          >
+            <span style={{ color: '#4EC9B0', fontWeight: 700 }}>&gt;_</span>
+            <span>CLI</span>
+          </button>
 
           {shortWallet ? (
+
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
               <div style={{ display: 'flex', alignItems: 'center', padding: '5px 14px', borderRadius: '9999px', border: '1px solid rgba(15,15,15,0.12)', background: 'rgba(255,255,255,0.8)' }}>
                 <span style={{ fontSize: '12px', color: '#222', fontFamily: 'monospace', fontWeight: 500 }}>{shortWallet}</span>
