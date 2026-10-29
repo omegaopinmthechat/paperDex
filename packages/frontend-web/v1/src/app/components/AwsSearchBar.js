@@ -46,7 +46,8 @@ export default function AwsSearchBar() {
     return (
       service.name.toLowerCase().includes(q) ||
       service.shortDesc.toLowerCase().includes(q) ||
-      service.category.toLowerCase().includes(q)
+      service.category.toLowerCase().includes(q) ||
+      (service.keywords && service.keywords.some((k) => k.toLowerCase().includes(q)))
     );
   });
 

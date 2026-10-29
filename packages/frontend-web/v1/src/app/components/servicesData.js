@@ -6,6 +6,7 @@ import {
   ApiKeysIcon,
   DocsIcon,
   TerminalIcon,
+  KnowledgeIcon,
 } from './NavIcons';
 
 export const ALL_SERVICES = [
@@ -17,6 +18,7 @@ export const ALL_SERVICES = [
     href: '/dashboard',
     icon: DashboardIcon,
     accentColor: '#2563EB',
+    keywords: ['dashboard', 'home', 'overview', 'oracle', 'stats', 'balances', 'account', 'feed'],
   },
   {
     id: 'markets',
@@ -26,6 +28,7 @@ export const ALL_SERVICES = [
     href: '/markets',
     icon: MarketsIcon,
     accentColor: '#059669',
+    keywords: ['markets', 'prices', 'spot', 'btcp', 'ethp', 'tokens', 'crypto', 'depth', 'pyth'],
   },
   {
     id: 'trade',
@@ -35,6 +38,7 @@ export const ALL_SERVICES = [
     href: '/trade',
     icon: TradeIcon,
     accentColor: '#D97706',
+    keywords: ['trade', 'swap', 'order', 'buy', 'sell', 'terminal', 'candlestick', 'execution', 'desk'],
   },
   {
     id: 'portfolio',
@@ -44,6 +48,7 @@ export const ALL_SERVICES = [
     href: '/portfolio',
     icon: PortfolioIcon,
     accentColor: '#7C3AED',
+    keywords: ['portfolio', 'holdings', 'wallet', 'balances', 'assets', 'tokens', 'pnl'],
   },
   {
     id: 'api-keys',
@@ -53,6 +58,7 @@ export const ALL_SERVICES = [
     href: '/api',
     icon: ApiKeysIcon,
     accentColor: '#DB2777',
+    keywords: ['api', 'keys', 'secrets', 'developer', 'tokens', 'credentials', 'rest', 'access'],
   },
   {
     id: 'docs',
@@ -62,6 +68,7 @@ export const ALL_SERVICES = [
     href: '/docs',
     icon: DocsIcon,
     accentColor: '#0284C7',
+    keywords: ['docs', 'documentation', 'api', 'endpoints', 'reference', 'sdk', 'curl', 'swagger'],
   },
   {
     id: 'cli-terminal',
@@ -72,8 +79,18 @@ export const ALL_SERVICES = [
     actionType: 'TOGGLE_TERMINAL',
     icon: TerminalIcon,
     accentColor: '#0D9488',
+    keywords: ['cli', 'terminal', 'command', 'console', 'bash', 'shell', 'prompt'],
+  },
+  {
+    id: 'knowledge',
+    name: 'Knowledge Center',
+    shortDesc: 'Guides, FAQs & how-to articles',
+    category: 'Resources',
+    href: '/knowledge',
+    icon: KnowledgeIcon,
+    accentColor: '#B45309',
+    keywords: ['knowledge', 'center', 'help', 'faq', 'guide', 'about', 'company', 'how to', 'tutorial', 'learn'],
   },
 ];
 
-export const SERVICE_CATEGORIES = ['Trading & Markets', 'Developer & APIs'];
-
+export const SERVICE_CATEGORIES = ['Trading & Markets', 'Developer & APIs', 'Resources'];

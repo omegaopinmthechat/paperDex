@@ -57,6 +57,41 @@ export default async function PortfolioPage() {
             <PortfolioHoldings initialData={initialData} />
           )}
 
+          {/* FAQ Section */}
+          <div style={{ marginTop: '48px', paddingTop: '32px', borderTop: '1px solid rgba(15, 15, 15, 0.08)' }}>
+            <h3 style={{ fontSize: '16px', fontWeight: 600, color: '#0F0F0F', marginBottom: '16px', letterSpacing: '-0.01em' }}>
+              Frequently Asked Questions (FAQ)
+            </h3>
+            <div style={{
+              background: '#FFFFFF',
+              border: '1px solid rgba(217, 119, 6, 0.35)',
+              borderRadius: '12px',
+              padding: '20px 24px',
+              boxShadow: '0 2px 10px rgba(217, 119, 6, 0.04)',
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px', flexWrap: 'wrap' }}>
+                <span style={{
+                  fontSize: '10px',
+                  fontWeight: 700,
+                  color: '#D97706',
+                  background: 'rgba(217, 119, 6, 0.12)',
+                  padding: '2px 7px',
+                  borderRadius: '4px',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.04em',
+                }}>
+                  FAQ
+                </span>
+                <span style={{ fontSize: '14px', fontWeight: 600, color: '#0F0F0F' }}>
+                  I have created a new account but it doesn&apos;t show 100k dollars in portfolio. What should I do?
+                </span>
+              </div>
+              <p style={{ fontSize: '13px', color: '#555', lineHeight: 1.6, margin: 0 }}>
+                Please wait for a few minutes (approximately 10 to 15 minutes) and keep refreshing the portfolio page. The 100k will be credited automatically. The initial 100,000 USDTP starter capital is minted and confirmed on-chain on Ethereum Sepolia by our relayer node. As soon as the network block confirmations clear, your balance will be updated.
+              </p>
+            </div>
+          </div>
+
         </div>
       </main>
 
