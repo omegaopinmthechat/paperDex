@@ -1,6 +1,6 @@
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
-import Navbar from '../components/Navbar';
+import AppShell from '../components/AppShell';
 import PortfolioHoldings from '../components/PortfolioHoldings';
 import { fetchPortfolio } from '../actions/portfolio';
 
@@ -24,13 +24,10 @@ export default async function PortfolioPage() {
     : null;
 
   return (
-    <div style={{ minHeight: '100dvh', display: 'flex', flexDirection: 'column', background: '#F8F6F1' }}>
-      <Navbar walletAddress={wallet?.value} />
-
+    <AppShell walletAddress={wallet?.value}>
       <main style={{ flex: 1, padding: '48px 32px' }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
 
-          {/* Header */}
           <div className="animate-hero-1" style={{ marginBottom: '36px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: '16px' }}>
             <div>
               <p style={{ fontSize: '11px', fontWeight: 600, letterSpacing: '0.22em', color: '#888', textTransform: 'uppercase', marginBottom: '8px' }}>
@@ -52,7 +49,7 @@ export default async function PortfolioPage() {
 
           {initialData.length === 0 ? (
             <div style={{ textAlign: 'center', padding: '80px 20px', color: '#888', fontSize: '14px' }}>
-              <p style={{ marginBottom: '8px', fontSize: '24px' }}>⏳</p>
+              <p style={{ marginBottom: '8px', fontSize: '24px', fontFamily: 'monospace', color: '#AAA' }}>[...]</p>
               <p>If you just created your account, it might take up to a few minutes to confirm on the Sepolia blockchain and register your joining $100,000 USDTP.</p>
               <p style={{ marginTop: '8px', fontSize: '12px', color: '#aaa' }}>Balances update automatically once confirmed.</p>
             </div>
@@ -68,6 +65,6 @@ export default async function PortfolioPage() {
           <span>© 2026 PaperDEX</span>
         </div>
       </footer>
-    </div>
+    </AppShell>
   );
 }

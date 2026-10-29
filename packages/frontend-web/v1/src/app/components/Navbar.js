@@ -1,135 +1,184 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
 import { logout } from '../actions/auth';
 import { useTerminal } from './terminal/TerminalContext';
+import AwsSearchBar from './AwsSearchBar';
+import { HamburgerIcon, TerminalIcon } from './NavIcons';
 
-export default function Navbar({ walletAddress }) {
-  const pathname = usePathname();
-  const { isOpen, setIsOpen } = useTerminal();
+export default function Navbar({ walletAddress, onHamburger = null }) {
+  const { isOpen: isTerminalOpen, setIsOpen: setTerminalOpen } = useTerminal();
 
   const shortWallet = walletAddress
     ? `${walletAddress.slice(0, 6)}...${walletAddress.slice(-4)}`
     : null;
 
-
-  const navLinks = [
-    { href: '/dashboard', label: 'Dashboard' },
-    { href: '/markets', label: 'Markets' },
-    { href: '/portfolio', label: 'Portfolio' },
-    { href: '/trade', label: 'Trade' },
-    { href: '/api', label: 'API Keys' },
-    { href: '/docs', label: 'API Docs' },
-  ];
-
-
   return (
-    <header style={{ borderBottom: '1px solid rgba(15,15,15,0.08)', background: 'rgba(248, 246, 241, 0.85)', backdropFilter: 'blur(8px)', position: 'sticky', top: 0, zIndex: 40, flexShrink: 0 }}>
-      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '16px 32px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+    <header
+      style={{
+        borderBottom: '1px solid rgba(15,15,15,0.08)',
+        background: 'rgba(248,246,241,0.96)',
+        backdropFilter: 'blur(8px)',
+        WebkitBackdropFilter: 'blur(8px)',
+        position: 'sticky',
+        top: 0,
+        zIndex: 50,
+        flexShrink: 0,
+        height: '54px',
+      }}
+    >
+      <div
+        style={{
+          height: '100%',
+          padding: '0 20px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          gap: '12px',
+        }}
+      >
+        {/* LEFT — Hamburger + Logo */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexShrink: 0 }}>
+          {/* Hamburger toggle */}
+          <button
+            type="button"
+            onClick={onHamburger ?? undefined}
+            title="Toggle sidebar navigation"
+            aria-label="Toggle navigation sidebar"
+            style={{
+              background: 'transparent',
+              border: '1px solid rgba(15,15,15,0.10)',
+              borderRadius: '7px',
+              width: '34px',
+              height: '34px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              cursor: onHamburger ? 'pointer' : 'default',
+              color: '#444',
+              transition: 'all 0.15s ease',
+              flexShrink: 0,
+              opacity: onHamburger ? 1 : 0.35,
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = 'rgba(15,15,15,0.05)';
+              e.currentTarget.style.borderColor = 'rgba(15,15,15,0.18)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = 'transparent';
+              e.currentTarget.style.borderColor = 'rgba(15,15,15,0.10)';
+            }}
+          >
+            <HamburgerIcon size={17} />
+          </button>
 
-        {/* Brand & Nav */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '36px' }}>
-          <Link href={walletAddress ? '/dashboard' : '/'} style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '8px' }}>
+          {/* Brand logo */}
+          <Link
+            href={walletAddress ? '/dashboard' : '/'}
+            style={{ textDecoration: 'none', display: 'flex', alignItems: 'center' }}
+          >
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="/logo.png"
               alt="PaperDEX"
-              style={{ height: '30px', width: 'auto', display: 'block' }}
+              style={{ height: '26px', width: 'auto', display: 'block' }}
             />
           </Link>
-
-          <nav style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-            {navLinks.map((link) => {
-              const isActive = pathname === link.href;
-              return (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  style={{
-                    textDecoration: 'none',
-                    fontSize: '13px',
-                    fontWeight: isActive ? 600 : 400,
-                    color: isActive ? '#0F0F0F' : '#666',
-                    padding: '6px 14px',
-                    borderRadius: '9999px',
-                    background: isActive ? 'rgba(15,15,15,0.06)' : 'transparent',
-                    transition: 'all 0.15s ease',
-                  }}
-                >
-                  {link.label}
-                </Link>
-              );
-            })}
-          </nav>
         </div>
 
-        {/* Right side status & wallet */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+        {/* CENTRE — Search bar */}
+        <div style={{ flex: 1, display: 'flex', justifyContent: 'center', maxWidth: '480px' }}>
+          <AwsSearchBar />
+        </div>
 
-          {/* CLI Terminal Toggle Button */}
+        {/* RIGHT — CLI + Wallet + Disconnect */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
+          {/* CLI toggle */}
           <button
             type="button"
-            onClick={() => setIsOpen((prev) => !prev)}
+            onClick={() => setTerminalOpen((p) => !p)}
             title="Toggle CLI Terminal (Ctrl + `)"
             style={{
-              background: isOpen ? '#0F0F0F' : 'rgba(15, 15, 15, 0.05)',
-              color: isOpen ? '#4EC9B0' : '#444',
-              border: isOpen ? '1px solid #0F0F0F' : '1px solid rgba(15, 15, 15, 0.12)',
-              padding: '5px 12px',
-              borderRadius: '9999px',
+              background: isTerminalOpen ? '#0F0F0F' : 'rgba(15,15,15,0.05)',
+              color: isTerminalOpen ? '#4EC9B0' : '#555',
+              border: isTerminalOpen ? '1px solid #0F0F0F' : '1px solid rgba(15,15,15,0.10)',
+              borderRadius: '7px',
+              padding: '5px 11px',
               fontSize: '12px',
               fontWeight: 600,
-              fontFamily: 'monospace',
+              fontFamily: 'inherit',
               cursor: 'pointer',
-              display: 'flex',
+              display: 'inline-flex',
               alignItems: 'center',
-              gap: '6px',
+              gap: '5px',
               transition: 'all 0.15s ease',
             }}
           >
-            <span style={{ color: '#4EC9B0', fontWeight: 700 }}>&gt;_</span>
+            <TerminalIcon size={14} color={isTerminalOpen ? '#4EC9B0' : '#555'} />
             <span>CLI</span>
           </button>
 
           {shortWallet ? (
-
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', padding: '5px 14px', borderRadius: '9999px', border: '1px solid rgba(15,15,15,0.12)', background: 'rgba(255,255,255,0.8)' }}>
-                <span style={{ fontSize: '12px', color: '#222', fontFamily: 'monospace', fontWeight: 500 }}>{shortWallet}</span>
+            <>
+              <div
+                style={{
+                  padding: '5px 11px',
+                  borderRadius: '7px',
+                  border: '1px solid rgba(15,15,15,0.10)',
+                  background: 'rgba(255,255,255,0.85)',
+                  fontSize: '12px',
+                  color: '#222',
+                  fontFamily: 'monospace',
+                  fontWeight: 500,
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                {shortWallet}
               </div>
               <form action={logout}>
-                <button type="submit" style={{
-                  background: 'transparent', color: '#666',
-                  border: '1px solid rgba(15,15,15,0.16)',
-                  padding: '5px 14px', borderRadius: '9999px',
-                  fontFamily: 'inherit', fontSize: '12px',
-                  cursor: 'pointer', letterSpacing: '0.02em',
-                  transition: 'all 0.15s ease',
-                }}>
+                <button
+                  type="submit"
+                  style={{
+                    background: 'transparent',
+                    color: '#666',
+                    border: '1px solid rgba(15,15,15,0.12)',
+                    borderRadius: '7px',
+                    padding: '5px 11px',
+                    fontSize: '12px',
+                    fontFamily: 'inherit',
+                    cursor: 'pointer',
+                    transition: 'all 0.15s ease',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.color = '#0F0F0F';
+                    e.currentTarget.style.borderColor = 'rgba(15,15,15,0.25)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.color = '#666';
+                    e.currentTarget.style.borderColor = 'rgba(15,15,15,0.12)';
+                  }}
+                >
                   Disconnect
                 </button>
               </form>
-            </div>
+            </>
           ) : (
             <Link
               href="/"
               style={{
                 textDecoration: 'none',
                 background: '#0F0F0F',
-                color: '#fff',
-                padding: '6px 16px',
-                borderRadius: '9999px',
+                color: '#FFF',
+                padding: '5px 14px',
+                borderRadius: '7px',
                 fontSize: '12px',
                 fontWeight: 500,
-                transition: 'all 0.15s ease',
               }}
             >
               Connect Wallet
             </Link>
           )}
         </div>
-
       </div>
     </header>
   );

@@ -1,7 +1,8 @@
 import { cookies } from 'next/headers';
 import Link from 'next/link';
-import Navbar from '../components/Navbar';
+import AppShell from '../components/AppShell';
 import ApiDocsFull from '../components/ApiDocsFull';
+import { ApiKeysIcon } from '../components/NavIcons';
 
 export const metadata = {
   title: 'API Documentation & Reference — PaperDEX',
@@ -13,13 +14,10 @@ export default async function DocsPage() {
   const wallet = cookieStore.get('pd_wallet');
 
   return (
-    <div style={{ minHeight: '100dvh', display: 'flex', flexDirection: 'column', background: '#F8F6F1' }}>
-      <Navbar walletAddress={wallet?.value} />
-
+    <AppShell walletAddress={wallet?.value}>
       <main style={{ flex: 1, padding: '48px 32px' }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '36px' }}>
 
-          {/* Hero Header */}
           <div
             className="animate-hero-1"
             style={{
@@ -28,33 +26,15 @@ export default async function DocsPage() {
               alignItems: 'flex-end',
               flexWrap: 'wrap',
               gap: '20px',
-              borderBottom: '1px solid rgba(15, 15, 15, 0.08)',
+              borderBottom: '1px solid rgba(15,15,15,0.08)',
               paddingBottom: '28px',
             }}
           >
             <div>
-              <p
-                style={{
-                  fontSize: '11px',
-                  fontWeight: 600,
-                  letterSpacing: '0.22em',
-                  color: '#888',
-                  textTransform: 'uppercase',
-                  marginBottom: '8px',
-                }}
-              >
+              <p style={{ fontSize: '11px', fontWeight: 600, letterSpacing: '0.22em', color: '#888', textTransform: 'uppercase', marginBottom: '8px' }}>
                 Developer Documentation
               </p>
-              <h1
-                style={{
-                  fontSize: 'clamp(28px, 4vw, 48px)',
-                  fontWeight: 300,
-                  letterSpacing: '-0.03em',
-                  color: '#0F0F0F',
-                  lineHeight: 1.1,
-                  margin: 0,
-                }}
-              >
+              <h1 style={{ fontSize: 'clamp(28px, 4vw, 48px)', fontWeight: 300, letterSpacing: '-0.03em', color: '#0F0F0F', lineHeight: 1.1, margin: 0 }}>
                 API Reference.
               </h1>
               <p style={{ fontSize: '14px', color: '#666', marginTop: '10px', maxWidth: '600px', lineHeight: 1.5 }}>
@@ -79,35 +59,23 @@ export default async function DocsPage() {
                   gap: '8px',
                 }}
               >
-                <span>🔑</span>
+                <ApiKeysIcon size={14} color="#FFFFFF" />
                 <span>Manage API Keys</span>
               </Link>
             </div>
           </div>
 
-          {/* Full Documentation Explorer */}
           <ApiDocsFull walletAddress={wallet?.value} />
 
         </div>
       </main>
 
-      <footer style={{ borderTop: '1px solid rgba(15, 15, 15, 0.08)', flexShrink: 0 }}>
-        <div
-          style={{
-            maxWidth: '1200px',
-            margin: '0 auto',
-            padding: '20px 32px',
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            fontSize: '11px',
-            color: '#aaa',
-          }}
-        >
+      <footer style={{ borderTop: '1px solid rgba(15,15,15,0.08)', flexShrink: 0 }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '20px 32px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '11px', color: '#aaa' }}>
           <span>© 2026 PaperDEX</span>
           <span>Public API Documentation v2.0</span>
         </div>
       </footer>
-    </div>
+    </AppShell>
   );
 }

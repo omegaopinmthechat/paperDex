@@ -1,7 +1,7 @@
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
-import Navbar from '../components/Navbar';
+import AppShell from '../components/AppShell';
 import { fetchMarkets } from '../actions/markets';
 import { fetchPortfolio } from '../actions/portfolio';
 
@@ -42,9 +42,7 @@ export default async function Dashboard() {
   };
 
   return (
-    <div style={{ minHeight: '100dvh', display: 'flex', flexDirection: 'column', background: '#F8F6F1' }}>
-      <Navbar walletAddress={wallet?.value} />
-
+    <AppShell walletAddress={wallet?.value}>
       <main style={{ flex: 1, padding: '48px 32px' }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
 
@@ -126,7 +124,6 @@ export default async function Dashboard() {
           {/* Module Cards */}
           <div className="animate-hero-3" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '16px' }}>
 
-            {/* Markets — active */}
             <Link href="/markets" style={{
               textDecoration: 'none', background: 'rgba(255,255,255,0.85)',
               border: '1px solid rgba(15,15,15,0.12)', borderRadius: '16px',
@@ -148,7 +145,6 @@ export default async function Dashboard() {
               </div>
             </Link>
 
-            {/* Portfolio — active */}
             <Link href="/portfolio" style={{
               textDecoration: 'none', background: 'rgba(255,255,255,0.85)',
               border: '1px solid rgba(15,15,15,0.12)', borderRadius: '16px',
@@ -171,16 +167,11 @@ export default async function Dashboard() {
                   </div>
                 ) : (
                   <div style={{
-                    marginTop: '10px',
-                    fontSize: '11px',
-                    color: '#92400E',
-                    background: 'rgba(245, 158, 11, 0.08)',
-                    border: '1px solid rgba(245, 158, 11, 0.2)',
-                    padding: '8px 10px',
-                    borderRadius: '8px',
-                    lineHeight: 1.4,
+                    marginTop: '10px', fontSize: '11px', color: '#92400E',
+                    background: 'rgba(245,158,11,0.08)', border: '1px solid rgba(245,158,11,0.2)',
+                    padding: '8px 10px', borderRadius: '8px', lineHeight: 1.4,
                   }}>
-                    ⏳ <strong>New account?</strong> Joining $100k USDTP may take up to a few minutes to confirm on Sepolia.
+                    <strong>New account?</strong> Joining $100k USDTP may take a few minutes to confirm on Sepolia.
                   </div>
                 )}
                 {usdtp && parseFloat(usdtp.balance) > 0 && (
@@ -194,7 +185,6 @@ export default async function Dashboard() {
               </div>
             </Link>
 
-            {/* Trade — live */}
             <Link href="/trade" style={{
               textDecoration: 'none', background: 'rgba(255,255,255,0.85)',
               border: '1px solid rgba(15,15,15,0.12)', borderRadius: '16px',
@@ -216,7 +206,6 @@ export default async function Dashboard() {
               </div>
             </Link>
 
-            {/* History — coming soon */}
             <div style={{
               background: 'rgba(255,255,255,0.5)', border: '1px solid rgba(15,15,15,0.06)',
               borderRadius: '16px', padding: '28px', display: 'flex',
@@ -240,6 +229,6 @@ export default async function Dashboard() {
           <span>© 2026 PaperDEX</span>
         </div>
       </footer>
-    </div>
+    </AppShell>
   );
 }

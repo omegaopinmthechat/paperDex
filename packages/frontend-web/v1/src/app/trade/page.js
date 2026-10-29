@@ -1,6 +1,6 @@
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
-import Navbar from '../components/Navbar';
+import AppShell from '../components/AppShell';
 import TradeDesk from '../components/TradeDesk';
 
 export const metadata = {
@@ -10,18 +10,36 @@ export const metadata = {
 
 export default async function TradePage() {
   const cookieStore = await cookies();
-  const token  = cookieStore.get('pd_token');
+  const token = cookieStore.get('pd_token');
   const wallet = cookieStore.get('pd_wallet');
 
   if (!token) redirect('/');
 
   return (
-    <div style={{ height: '100dvh', display: 'flex', flexDirection: 'column', background: '#F8F6F1', overflow: 'hidden' }}>
-      <Navbar walletAddress={wallet?.value} />
-
-      <main style={{ flex: 1, padding: '16px', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
+    /*
+     * Trade page uses full viewport height.
+     * AppShell provides the sticky navbar + persistent sidebar.
+     * The content column is flex-column and must fill the remaining height.
+     */
+    <AppShell walletAddress={wallet?.value} fullHeight>
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden', padding: '16px' }}>
         {/* Page heading / Top Bar */}
-        <div className="animate-hero-1" style={{ marginBottom: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px', padding: '12px 20px', background: '#FFFFFF', border: '1px solid #E5E7EB', borderRadius: '4px', flexShrink: 0 }}>
+        <div
+          className="animate-hero-1"
+          style={{
+            marginBottom: '16px',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            flexWrap: 'wrap',
+            gap: '16px',
+            padding: '12px 20px',
+            background: '#FFFFFF',
+            border: '1px solid #E5E7EB',
+            borderRadius: '4px',
+            flexShrink: 0,
+          }}
+        >
           <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
             <h1 style={{ fontSize: '20px', fontWeight: 600, color: '#111827', margin: 0, lineHeight: 1 }}>
               PaperDEX Trade
@@ -36,11 +54,11 @@ export default async function TradePage() {
           </div>
         </div>
 
-        {/* Trade desk full height area */}
+        {/* Trade desk full-height area */}
         <div className="animate-hero-2" style={{ flex: 1, display: 'flex', minHeight: 0 }}>
           <TradeDesk walletAddress={wallet?.value} />
         </div>
-      </main>
-    </div>
+      </div>
+    </AppShell>
   );
 }
